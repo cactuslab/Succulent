@@ -102,8 +102,16 @@ class Tests: XCTestCase {
         suc.recordBaseURL = URL(fileURLWithPath: "/Users/karlvr/Desktop/Mock/")
         
         GET("index.html") { (data, response, error) in
+            XCTAssertEqual(response?.statusCode, 404)
             let string = String(data: data!, encoding: .utf8)!
             XCTAssertTrue(string.endIndex > string.startIndex)
+        }
+    }
+    
+    func testHeaders() {
+        GET("headers/index.html") { (data, response, error) in
+            XCTAssertEqual(response?.statusCode, 404)
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "text/html;charset=utf-8")
         }
     }
     

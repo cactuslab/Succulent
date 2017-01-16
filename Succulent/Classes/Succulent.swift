@@ -39,39 +39,82 @@ public class Succulent {
             
             if let url = self.url(for: req.path, queryString: req.queryString, method: req.method) {
                 let data = try! Data(contentsOf: url)
-                let contentType = self.contentType(for: url)
                 
-                var res = Response(status: .ok)
-                res.headers = [("Content-Type", contentType)]
+                var status = ResponseStatus.ok
+                var headers: [(String, String)]?
+                
+                if let headersUrl = self.url(for: req.path, queryString: req.queryString, method: req.method, replaceExtension: "head") {
+                    if let headerData = try? Data(contentsOf: headersUrl) {
+                        let (aStatus, aHeaders) = self.parseHeaderData(data: headerData)
+                        status = aStatus
+                        headers = aHeaders
+                    }
+                }
+                
+                if headers == nil {
+                    let contentType = self.contentType(for: url)
+                    headers = [("Content-Type", contentType)]
+                }
+                
+                var res = Response(status: status)
+                res.headers = headers
                 
                 res.data = data
                 resultBlock(.response(res))
             } else if let passThroughBaseURL = self.passThroughBaseURL {
                 let url = URL(string: req.path, relativeTo: passThroughBaseURL)!
+                print("Pass-through URL: \(url.absoluteURL)")
                 
                 let dataTask = self.session.dataTask(with: url) { (data, response, error) in
-                    if let data = data {
-                        try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data)
-                        
-                        var res = Response(status: .ok)
-                        res.data = data
-                        resultBlock(.response(res))
+                    let response = response as! HTTPURLResponse
+                    let statusCode = response.statusCode
+                    
+                    var res = Response(status: .other(code: statusCode))
+                    
+                    var headers = [(String, String)]()
+                    for header in response.allHeaderFields {
+                        let key = (header.key as! String)
+                        if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+                            continue
+                        }
+                        headers.append((key, header.value as! String))
                     }
+                    res.headers = headers
+                    
+                    try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data, response: response)
+                    
+                    res.data = data
+                    
+                    resultBlock(.response(res))
                 }
                 dataTask.resume()
-                
-                //let data = try! Data(contentsOf: passThroughBaseURL)
-                //TODO headers like content-type
-                //TODO write those to files
-                //TODO non-GET requests
-                //TODO handle non-200 statuses
-                
-                
             } else {
                 resultBlock(.response(Response(status: .notFound)))
             }
         }
     }
+    
+    private func parseHeaderData(data: Data) -> (ResponseStatus, [(String, String)]) {
+        let lines = String(data: data, encoding: .utf8)!.components(separatedBy: "\r\n")
+        let statusCode = ResponseStatus.other(code: Int(lines[0])!)
+        var headers = [(String, String)]()
+        
+        for line in lines.dropFirst() {
+            if let r = line.range(of: ": ") {
+                let key = line.substring(to: r.lowerBound)
+                let value = line.substring(from: r.upperBound)
+                
+                if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+                    continue
+                }
+                headers.append((key, value))
+            }
+        }
+        
+        return (statusCode, headers)
+    }
+    
+    private static let dontPassThroughHeaders = ["content-encoding": true, "content-length": true, "connection": true, "keep-alive": true]
     
     private func createRequest(environ: [String: Any]) -> Request {
         let method = environ["REQUEST_METHOD"] as! String
@@ -143,7 +186,7 @@ public class Succulent {
         loopThread.start()
     }
     
-    private func record(for path: String, queryString: String?, method: String, data: Data) throws {
+    private func record(for path: String, queryString: String?, method: String, data: Data?, response: HTTPURLResponse) throws {
         guard let recordBaseURL = self.recordBaseURL else {
             return
         }
@@ -153,13 +196,38 @@ public class Succulent {
         
         try FileManager.default.createDirectory(at: recordURL.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
         
-        try data.write(to: recordURL)
+        if let data = data {
+            try data.write(to: recordURL)
+        }
+        
+        if let headersData = headerData(response: response) {
+            let headersResource = mockPath(for: path, queryString: queryString, method: method, version: version, replaceExtension: "head")
+            let headersURL = URL(string: ".\(headersResource)", relativeTo: recordBaseURL)!
+            
+            try headersData.write(to: headersURL)
+        }
+        
     }
     
-    private func url(for path: String, queryString: String?, method: String) -> URL? {
+    private func headerData(response: HTTPURLResponse) -> Data? {
+        var string = "\(response.statusCode)\r\n"
+        
+        for header in response.allHeaderFields {
+            let key = header.key as! String
+            
+            if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+                continue
+            }
+            
+            string += "\(key): \(header.value)\r\n"
+        }
+        return string.data(using: .utf8)
+    }
+    
+    private func url(for path: String, queryString: String?, method: String, replaceExtension: String? = nil) -> URL? {
         var searchVersion = version
         while searchVersion >= 0 {
-            let resource = mockPath(for: path, queryString: queryString, method: method, version: searchVersion)
+            let resource = mockPath(for: path, queryString: queryString, method: method, version: searchVersion, replaceExtension: replaceExtension)
             if let url = self.bundle.url(forResource: "Mock\(resource)", withExtension: nil) {
                 return url
             }
@@ -170,10 +238,9 @@ public class Succulent {
         return nil
     }
     
-    private func mockPath(for path: String, queryString: String?, method: String, version: Int) -> String {
-        //TODO queryString
+    private func mockPath(for path: String, queryString: String?, method: String, version: Int, replaceExtension: String? = nil) -> String {
         let withoutExtension = (path as NSString).deletingPathExtension
-        let ext = (path as NSString).pathExtension
+        let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
         let querySuffix = (queryString == nil) ? "": "?\(queryString!)"
         

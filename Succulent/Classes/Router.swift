@@ -70,14 +70,14 @@ public class Matching {
 public enum ResponseStatus: Equatable, CustomStringConvertible {
     
     public static func ==(lhs: ResponseStatus, rhs: ResponseStatus) -> Bool {
-        return lhs.code == rhs.code && lhs.message == rhs.message
+        return lhs.code == rhs.code
     }
 
     case notFound
     case ok
     case notModified
     case internalServerError
-    case other(code: Int, message: String)
+    case other(code: Int)
     
     public var code: Int {
         switch self {
@@ -85,18 +85,12 @@ public enum ResponseStatus: Equatable, CustomStringConvertible {
         case .ok: return 200
         case .notModified: return 304
         case .internalServerError: return 500
-        case .other(let code, let message): return code
+        case .other(let code): return code
         }
     }
     
     public var message: String {
-        switch self {
-        case .notFound: return "Not Found"
-        case .ok: return "OK"
-        case .notModified: return "Not Modified"
-        case .internalServerError: return "Internal Server Error"
-        case .other(let code, let message): return message
-        }
+        return HTTPURLResponse.localizedString(forStatusCode: code)
     }
     
     public var description: String {
