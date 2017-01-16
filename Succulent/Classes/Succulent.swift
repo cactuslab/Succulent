@@ -26,7 +26,7 @@ public class Succulent {
     public init(bundle: Bundle) {
         self.bundle = bundle
         
-        router.add(".*").block { (req) -> Response? in
+        router.add(".*").anyParams().block { (req) -> Response? in
             /* Increment version when we get the first GET after a mutating http method */
             if req.method != "GET" && req.method != "HEAD" {
                 self.lastWasMutation = true
@@ -67,21 +67,7 @@ public class Succulent {
         let path = environ["PATH_INFO"] as! String
         
         var req = Request(method: method, path: path)
-        if let queryString = environ["QUERY_STRING"] as? String {
-//            var params = [String: String]()
-//            
-//            for pair in queryString.components(separatedBy: "&") {
-//                let pairTuple = pair.components(separatedBy: "=")
-//                if pairTuple.count == 2 {
-//                    params[pairTuple[0]] = pairTuple[1]
-//                } else {
-//                    params[pairTuple[0]] = ""
-//                }
-//            }
-//            
-//            req.params = params
-            req.queryString = queryString
-        }
+        req.queryString = environ["QUERY_STRING"] as? String
         
         var headers = [(String, String)]()
         for pair in environ {
