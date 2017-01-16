@@ -40,7 +40,7 @@ public class Succulent {
             let queryString = environ["QUERY_STRING"] as? String
             
             /* Increment version when we get the first GET after a mutating http method */
-            if method != "GET" {
+            if method != "GET" && method != "HEAD" {
                 self.lastWasMutation = true
             } else if self.lastWasMutation {
                 self.version += 1
