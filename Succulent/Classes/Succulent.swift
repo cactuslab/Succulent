@@ -4,7 +4,7 @@ public class Succulent {
     
     public var port: Int?
     public var version = 0
-    public var passThroughURL: URL?
+    public var passThroughBaseURL: URL?
     public var recordBaseURL: URL?
     
     public let router = Matching()
@@ -19,6 +19,8 @@ public class Succulent {
     
     private var lastWasMutation = false
     
+    private lazy var session = URLSession(configuration: .default)
+    
     public var actualPort: Int {
         return server.listenAddress.port
     }
@@ -26,7 +28,7 @@ public class Succulent {
     public init(bundle: Bundle) {
         self.bundle = bundle
         
-        router.add(".*").anyParams().block { (req) -> Response? in
+        router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
             if req.method != "GET" && req.method != "HEAD" {
                 self.lastWasMutation = true
@@ -43,21 +45,30 @@ public class Succulent {
                 res.headers = [("Content-Type", contentType)]
                 
                 res.data = data
-                return res
-            } else if let passThroughURL = self.passThroughURL {
-                let data = try! Data(contentsOf: passThroughURL)
+                resultBlock(.response(res))
+            } else if let passThroughBaseURL = self.passThroughBaseURL {
+                let url = URL(string: req.path, relativeTo: passThroughBaseURL)!
+                
+                let dataTask = self.session.dataTask(with: url) { (data, response, error) in
+                    if let data = data {
+                        try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data)
+                        
+                        var res = Response(status: .ok)
+                        res.data = data
+                        resultBlock(.response(res))
+                    }
+                }
+                dataTask.resume()
+                
+                //let data = try! Data(contentsOf: passThroughBaseURL)
                 //TODO headers like content-type
                 //TODO write those to files
                 //TODO non-GET requests
                 //TODO handle non-200 statuses
                 
-                try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data)
                 
-                var res = Response(status: .ok)
-                res.data = data
-                return res
             } else {
-                return Response(status: .notFound)
+                resultBlock(.response(Response(status: .notFound)))
             }
         }
     }
@@ -87,8 +98,8 @@ public class Succulent {
         let app: SWSGI = {
             (
             environ: [String: Any],
-            startResponse: ((String, [(String, String)]) -> Void),
-            sendBody: ((Data) -> Void)
+            startResponse: @escaping ((String, [(String, String)]) -> Void),
+            sendBody: @escaping ((Data) -> Void)
             ) in
             
             let method = environ["REQUEST_METHOD"] as! String
@@ -96,14 +107,31 @@ public class Succulent {
             let queryString = environ["QUERY_STRING"] as? String
             
             let req = self.createRequest(environ: environ)
-            let res = self.router.handle(request: req)
-            
-            startResponse("\(res.status)", res.headers ?? [])
-            
-            if let data = res.data {
-                sendBody(data)
+            self.router.handle(request: req) { result in
+                self.loop.call {
+                    switch result {
+                    case .response(let res):
+                        startResponse("\(res.status)", res.headers ?? [])
+                        
+                        if let data = res.data {
+                            sendBody(data)
+                        }
+                        sendBody(Data())
+                        
+                    case .error(let error):
+                        startResponse(ResponseStatus.internalServerError.description, [ ("Content-Type", "text/plain") ])
+                        sendBody("An error occurred: \(error)".data(using: .utf8)!)
+                        sendBody(Data())
+                        
+                    case .noRoute:
+                        startResponse(ResponseStatus.notFound.description, [])
+                        sendBody(Data())
+                        
+                    }
+                }
             }
-            sendBody(Data())
+            
+            
         }
         
         server = DefaultHTTPServer(eventLoop: loop, port: port ?? 0, app: app)

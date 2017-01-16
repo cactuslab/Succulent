@@ -89,7 +89,7 @@ class Tests: XCTestCase {
     }
     
     func testPassThrough() {
-        suc.passThroughURL = URL(string: "http://www.cactuslab.com/")
+        suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
         
         GET("index.html") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
@@ -98,7 +98,7 @@ class Tests: XCTestCase {
     }
     
     func testRecord() {
-        suc.passThroughURL = URL(string: "http://www.cactuslab.com/")
+        suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
         suc.recordBaseURL = URL(fileURLWithPath: "/Users/karlvr/Desktop/Mock/")
         
         GET("index.html") { (data, response, error) in

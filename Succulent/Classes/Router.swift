@@ -8,6 +8,16 @@
 
 import Foundation
 
+public typealias RoutingResultBLock = (RoutingResult) -> ()
+
+public enum RoutingResult {
+    
+    case response(_: Response)
+    case error(_: Error)
+    case noRoute
+    
+}
+
 public class Matching {
 
     private var matchers = [Matcher]()
@@ -22,7 +32,7 @@ public class Matching {
         return matcher
     }
 
-    public func handle(request: Request) -> Response {
+    public func handle(request: Request, resultBlock: @escaping RoutingResultBLock) {
         var bestScore = -1
         var bestMatcher: Matcher?
 
@@ -36,10 +46,23 @@ public class Matching {
         }
 
         if let matcher = bestMatcher {
-            return matcher.handle(request: request)
+            matcher.handle(request: request, resultBlock: resultBlock)
         } else {
-            return Response(status: .notFound)
+            resultBlock(.noRoute)
         }
+    }
+    
+    public func handleSync(request: Request) -> RoutingResult {
+        var result: RoutingResult?
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        handle(request: request) { theResult in
+            result = theResult
+            semaphore.signal()
+        }
+        
+        semaphore.wait()
+        return result!
     }
 
 }
@@ -116,12 +139,15 @@ public enum ContentType {
 }
 
 public class Matcher {
+    
+    public typealias ThenBlock = () -> ()
 
     private let path: String
     private var params = [String: String]()
     private var allowOtherParams = false
     private var headers = [String: String]()
     private var responder: Responder?
+    private var thenBlock: ThenBlock?
 
     public init(_ path: String) {
         self.path = path
@@ -183,7 +209,8 @@ public class Matcher {
         return content(data, .TextJSON)
     }
 
-    @discardableResult public func then(_ block: () -> ()) -> Matcher {
+    @discardableResult public func then(_ block: @escaping ThenBlock) -> Matcher {
+        self.thenBlock = block
         return self
     }
 
@@ -265,18 +292,25 @@ public class Matcher {
         return result
     }
 
-    func handle(request: Request) -> Response {
+    func handle(request: Request, resultBlock: @escaping RoutingResultBLock) {
         do {
             if let responder = responder {
-                if let response = try responder.respond(request: request) {
-                    return response
+                responder.respond(request: request) { (result) in
+                    resultBlock(result)
+                    
+                    if let thenBlock = self.thenBlock {
+                        thenBlock()
+                    }
+                }
+            } else {
+                resultBlock(.response(Response(status: .notFound)))
+                
+                if let thenBlock = thenBlock {
+                    thenBlock()
                 }
             }
-            
-            return Response(status: .notFound)
         } catch {
-            print("Failed to generate response: \(error)")
-            return Response(status: .internalServerError)
+            resultBlock(.error(error))
         }
     }
 
@@ -345,21 +379,9 @@ public enum ResponderError: Error {
 }
 
 public protocol Responder {
-
-    typealias ResponderBlock = () -> ()
     
-    func respond(request: Request) throws -> Response?
-    
-    func then(_ block: ResponderBlock)
+    func respond(request: Request, resultBlock: @escaping RoutingResultBLock)
 
-}
-
-extension Responder {
-    
-    public func then(_ block: ResponderBlock) {
-
-    }
-    
 }
 
 public class ResourceResponder: Responder {
@@ -378,9 +400,13 @@ public class ResourceResponder: Responder {
         }
     }
     
-    public func respond(request: Request) throws -> Response? {
-        let data = try Data.init(contentsOf: url)
-        return Response(status: .ok, data: data, contentType: .TextPlain)
+    public func respond(request: Request, resultBlock: @escaping RoutingResultBLock) {
+        do {
+            let data = try Data.init(contentsOf: url)
+            resultBlock(.response(Response(status: .ok, data: data, contentType: .TextPlain))) //TODO contentType
+        } catch {
+            resultBlock(.error(error))
+        }
     }
     
 }
@@ -397,15 +423,15 @@ public class ContentResponder: Responder {
         self.data = data
     }
     
-    public func respond(request: Request) -> Response? {
-        return Response(status: .ok, data: data, contentType: .TextPlain)
+    public func respond(request: Request, resultBlock: @escaping RoutingResultBLock) {
+        resultBlock(.response(Response(status: .ok, data: data, contentType: .TextPlain))) //TODO contentType
     }
     
 }
 
 public class BlockResponder: Responder {
     
-    public typealias BlockResponderBlock = (Request) -> (Response?)
+    public typealias BlockResponderBlock = (Request, @escaping RoutingResultBLock) -> ()
     
     private let block: BlockResponderBlock
     
@@ -413,8 +439,8 @@ public class BlockResponder: Responder {
         self.block = block
     }
     
-    public func respond(request: Request) throws -> Response? {
-        return block(request)
+    public func respond(request: Request, resultBlock: @escaping RoutingResultBLock) {
+        block(request, resultBlock)
     }
 }
 
@@ -426,8 +452,8 @@ public class StatusResponder: Responder {
         self.status = status
     }
     
-    public func respond(request: Request) throws -> Response? {
-        return Response(status: status)
+    public func respond(request: Request, resultBlock: @escaping RoutingResultBLock) {
+        resultBlock(.response(Response(status: status)))
     }
     
 }
