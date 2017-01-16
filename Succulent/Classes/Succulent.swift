@@ -7,6 +7,8 @@ public class Succulent {
     public var passThroughURL: URL?
     public var recordBaseURL: URL?
     
+    public let router = Matching()
+    
     private let bundle: Bundle
     
     private var loop: EventLoop!
@@ -23,6 +25,74 @@ public class Succulent {
     
     public init(bundle: Bundle) {
         self.bundle = bundle
+        
+        router.add(".*").block { (req) -> Response? in
+            /* Increment version when we get the first GET after a mutating http method */
+            if req.method != "GET" && req.method != "HEAD" {
+                self.lastWasMutation = true
+            } else if self.lastWasMutation {
+                self.version += 1
+                self.lastWasMutation = false
+            }
+            
+            if let url = self.url(for: req.path, queryString: req.queryString, method: req.method) {
+                let data = try! Data(contentsOf: url)
+                let contentType = self.contentType(for: url)
+                
+                var res = Response(status: .ok)
+                res.headers = [("Content-Type", contentType)]
+                
+                res.data = data
+                return res
+            } else if let passThroughURL = self.passThroughURL {
+                let data = try! Data(contentsOf: passThroughURL)
+                //TODO headers like content-type
+                //TODO write those to files
+                //TODO non-GET requests
+                //TODO handle non-200 statuses
+                
+                try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data)
+                
+                var res = Response(status: .ok)
+                res.data = data
+                return res
+            } else {
+                return Response(status: .notFound)
+            }
+        }
+    }
+    
+    private func createRequest(environ: [String: Any]) -> Request {
+        let method = environ["REQUEST_METHOD"] as! String
+        let path = environ["PATH_INFO"] as! String
+        
+        var req = Request(method: method, path: path)
+        if let queryString = environ["QUERY_STRING"] as? String {
+//            var params = [String: String]()
+//            
+//            for pair in queryString.components(separatedBy: "&") {
+//                let pairTuple = pair.components(separatedBy: "=")
+//                if pairTuple.count == 2 {
+//                    params[pairTuple[0]] = pairTuple[1]
+//                } else {
+//                    params[pairTuple[0]] = ""
+//                }
+//            }
+//            
+//            req.params = params
+            req.queryString = queryString
+        }
+        
+        var headers = [(String, String)]()
+        for pair in environ {
+            if pair.key.hasPrefix("HTTP_"), let value = pair.value as? String {
+                let key = pair.key.substring(from: pair.key.index(pair.key.startIndex, offsetBy: 5))
+                headers.append((key, value))
+            }
+        }
+        req.headers = headers
+        
+        return req
     }
     
     public func start() {
@@ -39,37 +109,15 @@ public class Succulent {
             let path = environ["PATH_INFO"] as! String
             let queryString = environ["QUERY_STRING"] as? String
             
-            /* Increment version when we get the first GET after a mutating http method */
-            if method != "GET" && method != "HEAD" {
-                self.lastWasMutation = true
-            } else if self.lastWasMutation {
-                self.version += 1
-                self.lastWasMutation = false
-            }
+            let req = self.createRequest(environ: environ)
+            let res = self.router.handle(request: req)
             
-            if let url = self.url(for: path, queryString: queryString, method: method) {
-                let data = try! Data(contentsOf: url)
-                let contentType = self.contentType(for: url)
-                startResponse("200 OK", [ ("Content-Type", contentType) ])
-                
+            startResponse("\(res.status)", res.headers ?? [])
+            
+            if let data = res.data {
                 sendBody(data)
-                sendBody(Data())
-            } else if let passThroughURL = self.passThroughURL {
-                let data = try! Data(contentsOf: passThroughURL)
-                //TODO headers like content-type
-                //TODO write those to files
-                //TODO non-GET requests
-                
-                try! self.record(for: path, queryString: queryString, method: method, data: data)
-                
-                
-                startResponse("200 OK", [])
-                sendBody(data)
-                sendBody(Data())
-            } else {
-                startResponse("404 Not Found", [])
-                sendBody(Data())
             }
+            sendBody(Data())
         }
         
         server = DefaultHTTPServer(eventLoop: loop, port: port ?? 0, app: app)
