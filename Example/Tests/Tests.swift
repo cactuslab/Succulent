@@ -117,7 +117,7 @@ class Tests: XCTestCase {
         }
         dataTask.resume()
         
-        self.waitForExpectations(timeout: 3) { (error) in
+        self.waitForExpectations(timeout: 10) { (error) in
             if let error = error {
                 completion(nil, nil, error)
             }
@@ -137,7 +137,7 @@ class Tests: XCTestCase {
         }
         dataTask.resume()
         
-        self.waitForExpectations(timeout: 3) { (error) in
+        self.waitForExpectations(timeout: 10) { (error) in
             if let error = error {
                 completion(nil, nil, error)
             }
