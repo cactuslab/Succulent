@@ -113,12 +113,20 @@ public class Succulent {
         let withoutExtension = (path as NSString).deletingPathExtension
         let ext = (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
+        let querySuffix = (queryString == nil) ? "": "?\(queryString!)"
         
-        return ("\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!
+        return ("\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
     }
     
     private func contentType(for url: URL) -> String {
-        switch url.pathExtension.lowercased() {
+        var path = url.path
+        if let r = path.range(of: "?", options: .backwards) {
+            path = path.substring(to: r.lowerBound)
+        }
+        
+        let ext = (path as NSString).pathExtension.lowercased()
+        
+        switch ext {
         case "json":
             return "text/json"
         case "txt":

@@ -28,8 +28,7 @@ class Tests: XCTestCase {
     
     func testSimple() {
         GET("testing") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssert(string == "Hello world")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Hello world")
             XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "application/x-octet-stream")
         }
         
@@ -38,31 +37,37 @@ class Tests: XCTestCase {
         }
         
         GET("testing.txt") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssertEqual(string, "Hello!\n")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Hello!\n")
             XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "text/plain")
         }
+    }
+    
+    func testQuery() {
+        GET("query.txt?username=test") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
         
+        GET("query.txt?username=fail") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+        }
     }
     
     func testNested() {
         GET("folder/testing.txt") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssertEqual(string, "Great")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Great")
         }
     }
     
     func testVersioned() {
         GET("folder/testing.txt") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssertEqual(string, "Great")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Great")
         }
         
         suc.version += 1
         
         GET("folder/testing.txt") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssertEqual(string, "Wrong")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Wrong")
         }
     }
     
