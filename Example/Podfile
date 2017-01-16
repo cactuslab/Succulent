@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Succulent_Example' do
+  pod 'Succulent', :path => '../'
+
+  target 'Succulent_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
