@@ -54,7 +54,7 @@ class RouterTests: XCTestCase {
         mock.add("/login").param("username", "karl").param("password", "toast").status(.ok)
 
         XCTAssert(mock.handle(request: Request(path: "/login", queryString: "username=karl")).status == .notFound)
-        XCTAssert(mock.handle(request: Request(path: "/login", queryString: "username=karl&password=oast")).status == .ok)
+        XCTAssert(mock.handle(request: Request(path: "/login", queryString: "username=karl&password=toast")).status == .ok)
         XCTAssert(mock.handle(request: Request(path: "/login", queryString: "username=karl&password=toastx")).status == .notFound)
         XCTAssert(mock.handle(request: Request(path: "/login", queryString: "username=karl&password=toast&another=other")).status == .notFound)
     }
