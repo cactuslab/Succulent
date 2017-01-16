@@ -6,6 +6,6 @@ target 'Succulent_Example' do
   target 'Succulent_Tests' do
     inherit! :search_paths
 
-    
+    pod 'Succulent', :path => '../'    
   end
 end

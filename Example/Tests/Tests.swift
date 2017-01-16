@@ -4,25 +4,138 @@ import Succulent
 
 class Tests: XCTestCase {
     
+    private var suc: Succulent!
+    private var session: URLSession!
+    private var baseURL: URL!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        let bundle = Bundle(for: type(of: self))
+        suc = Succulent(bundle: bundle)
+        suc.start()
+        
+        baseURL = URL(string: "http://localhost:\(suc.actualPort)")
+        
+        session = URLSession(configuration: .default)
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        suc.stop()
+        
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+    func testSimple() {
+        GET("testing") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "Hello world")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "application/x-octet-stream")
+        }
+        
+        GET("testing2") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+        }
+        
+        GET("testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertEqual(string, "Hello!\n")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "text/plain")
+        }
+        
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+    func testNested() {
+        GET("folder/testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertEqual(string, "Great")
+        }
+    }
+    
+    func testVersioned() {
+        GET("folder/testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertEqual(string, "Great")
+        }
+        
+        suc.version += 1
+        
+        GET("folder/testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertEqual(string, "Wrong")
+        }
+    }
+    
+    func testPOST() {
+        XCTAssertEqual(0, suc.version)
+        
+        POST("testing.txt", body: "Body".data(using: .utf8)!) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
+        }
+        
+        XCTAssertEqual(0, suc.version)
+        
+        GET("testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "Hello!\n")
+        }
+        
+        XCTAssertEqual(1, suc.version)
+    }
+    
+    func testPassThrough() {
+        suc.passThroughURL = URL(string: "http://www.cactuslab.com/")
+        
+        GET("index.html") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertTrue(string.endIndex > string.startIndex)
+        }
+    }
+    
+    func testRecord() {
+        suc.passThroughURL = URL(string: "http://www.cactuslab.com/")
+        suc.recordBaseURL = URL(fileURLWithPath: "/Users/karlvr/Desktop/Mock/")
+        
+        GET("index.html") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssertTrue(string.endIndex > string.startIndex)
+        }
+    }
+    
+    func GET(_ path: String, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
+        let url = URL(string: path, relativeTo: baseURL)!
+        let expectation = self.expectation(description: "Loaded URL")
+        
+        let dataTask = session.dataTask(with: url) { (data, response, error) in
+            completion(data, response as? HTTPURLResponse, error)
+            expectation.fulfill()
+        }
+        dataTask.resume()
+        
+        self.waitForExpectations(timeout: 3) { (error) in
+            if let error = error {
+                completion(nil, nil, error)
+            }
+        }
+    }
+    
+    func POST(_ path: String, body: Data, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
+        let url = URL(string: path, relativeTo: baseURL)!
+        let expectation = self.expectation(description: "Loaded URL")
+        
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        
+        let dataTask = session.uploadTask(with: req, from: body) { (data, response, error) in
+            completion(data, response as? HTTPURLResponse, error)
+            expectation.fulfill()
+        }
+        dataTask.resume()
+        
+        self.waitForExpectations(timeout: 3) { (error) in
+            if let error = error {
+                completion(nil, nil, error)
+            }
         }
     }
     
