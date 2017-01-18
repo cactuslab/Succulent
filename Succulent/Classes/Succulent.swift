@@ -224,7 +224,7 @@ public class Succulent {
             return
         }
         
-        let resource = mockPath(for: path, queryString: queryString, method: method, version: version)
+        let resource = sanitize(pathForURL: mockPath(for: path, queryString: queryString, method: method, version: version))
         let recordURL = URL(string: ".\(resource)", relativeTo: recordBaseURL)!
         
         try FileManager.default.createDirectory(at: recordURL.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
@@ -234,12 +234,17 @@ public class Succulent {
         }
         
         if let headersData = headerData(response: response) {
-            let headersResource = mockPath(for: path, queryString: queryString, method: method, version: version, replaceExtension: "head")
+            let headersResource = sanitize(pathForURL: mockPath(for: path, queryString: queryString, method: method, version: version, replaceExtension: "head"))
             let headersURL = URL(string: ".\(headersResource)", relativeTo: recordBaseURL)!
             
             try headersData.write(to: headersURL)
         }
         
+    }
+    
+    private func sanitize(pathForURL path: String) -> String {
+        return path.replacingOccurrences(of: "?", with: "%3F")
+//            .replacingOccurrences(of: "&", with: "%26")
     }
     
     private func headerData(response: HTTPURLResponse) -> Data? {
