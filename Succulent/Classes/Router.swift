@@ -326,7 +326,14 @@ public struct Request {
     public var headers: [(String, String)]?
     public var body: Data?
     public var contentType: ContentType? {
-        return nil
+        return nil //TODO
+    }
+    public var file: String {
+        if let queryString = queryString {
+            return "\(path)?\(queryString)"
+        } else {
+            return path
+        }
     }
 
     public init(method: String = RequestMethod.GET.rawValue, path: String) {

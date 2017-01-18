@@ -62,10 +62,20 @@ public class Succulent {
                 res.data = data
                 resultBlock(.response(res))
             } else if let passThroughBaseURL = self.passThroughBaseURL {
-                let url = URL(string: req.path, relativeTo: passThroughBaseURL)!
-                print("Pass-through URL: \(url.absoluteURL)")
+                var url = URL(string: ".\(req.file)", relativeTo: passThroughBaseURL)!
                 
-                let dataTask = self.session.dataTask(with: url) { (data, response, error) in
+                print("Pass-through URL: \(url.absoluteURL)")
+                var urlRequest = URLRequest(url: url)
+                req.headers?.forEach({ (key, value) in
+                    let fixedKey = key.replacingOccurrences(of: "_", with: "-").capitalized
+                    
+                    if !Succulent.dontPassThroughHeaders.contains(fixedKey.lowercased()) {
+                        urlRequest.addValue(value, forHTTPHeaderField: fixedKey)
+                    }
+                })
+                urlRequest.httpMethod = req.method
+                
+                let completionHandler = { (data: Data?, response: URLResponse?, error: Error?) in
                     let response = response as! HTTPURLResponse
                     let statusCode = response.statusCode
                     
@@ -74,7 +84,7 @@ public class Succulent {
                     var headers = [(String, String)]()
                     for header in response.allHeaderFields {
                         let key = (header.key as! String)
-                        if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+                        if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                             continue
                         }
                         headers.append((key, header.value as! String))
@@ -87,7 +97,14 @@ public class Succulent {
                     
                     resultBlock(.response(res))
                 }
-                dataTask.resume()
+                
+                if let body = req.body {
+                    let uploadTask = self.session.uploadTask(with: urlRequest, from: body, completionHandler: completionHandler)
+                    uploadTask.resume()
+                } else {
+                    let dataTask = self.session.dataTask(with: urlRequest, completionHandler: completionHandler)
+                    dataTask.resume()
+                }
             } else {
                 resultBlock(.response(Response(status: .notFound)))
             }
@@ -104,7 +121,7 @@ public class Succulent {
                 let key = line.substring(to: r.lowerBound)
                 let value = line.substring(from: r.upperBound)
                 
-                if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+                if Succulent.dontPassBackHeaders.contains(key.lowercased()) ?? false {
                     continue
                 }
                 headers.append((key, value))
@@ -114,7 +131,8 @@ public class Succulent {
         return (statusCode, headers)
     }
     
-    private static let dontPassThroughHeaders = ["content-encoding": true, "content-length": true, "connection": true, "keep-alive": true]
+    private static let dontPassBackHeaders: Set<String> = ["content-encoding", "content-length", "connection", "keep-alive"]
+    private static let dontPassThroughHeaders: Set<String> = ["accept-encoding", "content-length", "connection", "accept-language", "host"]
     
     private func createRequest(environ: [String: Any]) -> Request {
         let method = environ["REQUEST_METHOD"] as! String
@@ -131,6 +149,20 @@ public class Succulent {
             }
         }
         req.headers = headers
+        
+        var body: Data?
+        
+        let input = environ["swsgi.input"] as! SWSGIInput
+        input { data in
+            if data.count > 0 {
+                if body == nil {
+                    body = Data()
+                }
+                body!.append(data)
+            }
+        }
+        
+        req.body = body
         
         return req
     }
@@ -215,7 +247,7 @@ public class Succulent {
         for header in response.allHeaderFields {
             let key = header.key as! String
             
-            if Succulent.dontPassThroughHeaders[key.lowercased()] ?? false {
+            if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                 continue
             }
             
