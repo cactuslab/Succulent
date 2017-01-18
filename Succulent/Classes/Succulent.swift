@@ -209,7 +209,7 @@ public class Succulent {
             
         }
         
-        server = DefaultHTTPServer(eventLoop: loop, port: port ?? 0, app: app)
+        server = DefaultHTTPServer(eventLoop: loop, interface: "127.0.0.1", port: port ?? 0, app: app)
         
         try! server.start()
         
