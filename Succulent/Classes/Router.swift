@@ -236,7 +236,7 @@ public class Matcher {
     private func match(queryString: String?) -> Int? {
         var score = 0
 
-        if let params = parse(queryString: queryString) {
+        if let params = Matcher.parse(queryString: queryString) {
             var remainingToMatch = self.params
 
             for (key, value) in params {
@@ -267,7 +267,7 @@ public class Matcher {
         return score
     }
     
-    private func parse(queryString: String?) -> [(String, String)]? {
+    public static func parse(queryString: String?) -> [(String, String)]? {
         guard let queryString = queryString else {
             return nil
         }
