@@ -6,6 +6,7 @@ public class Succulent {
     public var version = 0
     public var passThroughBaseURL: URL?
     public var recordBaseURL: URL?
+    public var ignoreParameters: Set<String>?
     
     public let router = Matching()
     
@@ -274,9 +275,33 @@ public class Succulent {
         let withoutExtension = (path as NSString).deletingPathExtension
         let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
-        let querySuffix = (queryString == nil) ? "": "?\(queryString!)"
+        var querySuffix: String
+        if let queryString = queryString {
+            let sanitizedQueryString = sanitize(queryString: queryString)
+            querySuffix = "?\(sanitizedQueryString)"
+        } else {
+            querySuffix = ""
+        }
         
         return ("\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
+    }
+    
+    private func sanitize(queryString: String) -> String {
+        guard let ignoreParameters = self.ignoreParameters else {
+            return queryString
+        }
+        
+        let params = Matcher.parse(queryString: queryString)
+        var result = ""
+        params?.forEach({ (key, value) in
+            if !ignoreParameters.contains(key) {
+                if result.endIndex > result.startIndex {
+                    result += "&"
+                }
+                result += "\(key)=\(value)"
+            }
+        })
+        return result
     }
     
     private func contentType(for url: URL) -> String {
