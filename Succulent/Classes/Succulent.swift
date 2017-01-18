@@ -11,6 +11,7 @@ public class Succulent {
     public let router = Matching()
     
     private let bundle: Bundle
+    public var relativePath: String
     
     private var loop: EventLoop!
     private var server: DefaultHTTPServer!
@@ -26,8 +27,9 @@ public class Succulent {
         return server.listenAddress.port
     }
     
-    public init(bundle: Bundle) {
+    public init(bundle: Bundle, relativePath: String = ".") {
         self.bundle = bundle
+        self.relativePath = relativePath
         
         router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
@@ -266,7 +268,7 @@ public class Succulent {
         var searchVersion = version
         while searchVersion >= 0 {
             let resource = mockPath(for: path, queryString: queryString, method: method, version: searchVersion, replaceExtension: replaceExtension)
-            if let url = self.bundle.url(forResource: "Mock\(resource)", withExtension: nil) {
+            if let url = self.bundle.url(forResource: "Succulent\(resource)", withExtension: nil) {
                 return url
             }
             
@@ -288,7 +290,7 @@ public class Succulent {
             querySuffix = ""
         }
         
-        return ("\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
+        return ("/\(relativePath)\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
     }
     
     private func sanitize(queryString: String) -> String {
