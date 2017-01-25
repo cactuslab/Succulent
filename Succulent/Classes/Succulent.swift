@@ -323,9 +323,13 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         var searchVersion = version
         while searchVersion >= 0 {
             let resource = mockPath(for: path, queryString: queryString, method: method, version: searchVersion, replaceExtension: replaceExtension)
-            if let url = self.bundle.url(forResource: "Succulent\(resource)", withExtension: nil) {
-                return url
+            
+            if let resourceName = "Succulent\(resource)".removingPercentEncoding {
+                if let url = self.bundle.url(forResource: resourceName, withExtension: nil) {
+                    return url
+                }
             }
+            
             
             searchVersion -= 1
         }
