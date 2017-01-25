@@ -178,7 +178,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private static let dontPassBackHeaders: Set<String> = ["content-encoding", "content-length", "connection", "keep-alive"]
     private static let dontPassThroughHeaders: Set<String> = ["accept-encoding", "content-length", "connection", "accept-language", "host"]
     
-    private func createRequest(environ: [String: Any]) -> Request {
+    private func createRequest(environ: [String: Any], completion: @escaping (Request)->()) {
         let method = environ["REQUEST_METHOD"] as! String
         let path = environ["PATH_INFO"] as! String
         
@@ -196,19 +196,30 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         
         var body: Data?
         
-        let input = environ["swsgi.input"] as! SWSGIInput
-        input { data in
-            if data.count > 0 {
-                if body == nil {
-                    body = Data()
+        /* We workaround what I think is a fault in Embassy. If the request has no body, then the input
+           block is never called with the empty data to signify EOF. So we need to detect whether or not
+           there should be a body.
+         */
+        if method == "GET" || method == "HEAD" {
+            completion(req)
+        } else {
+            if let contentLengthString = req.header("Content-Length"), Int(contentLengthString) == 0 {
+                completion(req)
+            } else {
+                let input = environ["swsgi.input"] as! SWSGIInput
+                input { data in
+                    if data.count > 0 {
+                        if body == nil {
+                            body = Data()
+                        }
+                        body!.append(data)
+                    } else {
+                        req.body = body
+                        completion(req)
+                    }
                 }
-                body!.append(data)
             }
         }
-        
-        req.body = body
-        
-        return req
     }
     
     public func start() {
@@ -225,31 +236,34 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             let path = environ["PATH_INFO"] as! String
             let queryString = environ["QUERY_STRING"] as? String
             
-            let req = self.createRequest(environ: environ)
-            self.router.handle(request: req) { result in
-                self.loop.call {
-                    switch result {
-                    case .response(let res):
-                        startResponse("\(res.status)", res.headers ?? [])
-                        
-                        if let data = res.data {
-                            sendBody(data)
+            self.createRequest(environ: environ) { req in
+                self.router.handle(request: req) { result in
+                    self.loop.call {
+                        switch result {
+                        case .response(let res):
+                            if res.containsHeader("Set-Cookie") {
+                                print("Here we are with cooookies")
+                            }
+                            startResponse("\(res.status)", res.headers ?? [])
+                            
+                            if let data = res.data {
+                                sendBody(data)
+                            }
+                            sendBody(Data())
+                            
+                        case .error(let error):
+                            startResponse(ResponseStatus.internalServerError.description, [ ("Content-Type", "text/plain") ])
+                            sendBody("An error occurred: \(error)".data(using: .utf8)!)
+                            sendBody(Data())
+                            
+                        case .noRoute:
+                            startResponse(ResponseStatus.notFound.description, [])
+                            sendBody(Data())
+                            
                         }
-                        sendBody(Data())
-                        
-                    case .error(let error):
-                        startResponse(ResponseStatus.internalServerError.description, [ ("Content-Type", "text/plain") ])
-                        sendBody("An error occurred: \(error)".data(using: .utf8)!)
-                        sendBody(Data())
-                        
-                    case .noRoute:
-                        startResponse(ResponseStatus.notFound.description, [])
-                        sendBody(Data())
-                        
                     }
                 }
             }
-            
             
         }
         
