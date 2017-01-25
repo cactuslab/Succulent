@@ -14,8 +14,9 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		B827BD971E2C5146003256F2 /* Mock in Resources */ = {isa = PBXBuildFile; fileRef = B827BD961E2C5146003256F2 /* Mock */; };
 		B827BD9B1E2C739F003256F2 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B827BD9A1E2C739F003256F2 /* RouterTests.swift */; };
+		B8F58B081E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
+		B8F58B091E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
 		DEF073E09BE775740BAF0EA8 /* Pods_Succulent_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0BD5D5480986E7F56D19900 /* Pods_Succulent_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -46,8 +47,8 @@
 		88FDAF260577A4CFB4E2B266 /* Pods-Succulent_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Succulent_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Succulent_Example/Pods-Succulent_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		8A7D5F72DAC9F3C63A2D2BB4 /* Pods_Succulent_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Succulent_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7D321DBFDE0C96D3D3CDE84 /* Succulent.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Succulent.podspec; path = ../Succulent.podspec; sourceTree = "<group>"; };
-		B827BD961E2C5146003256F2 /* Mock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Mock; sourceTree = "<group>"; };
 		B827BD9A1E2C739F003256F2 /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
+		B8F58B071E38633F00F6F087 /* Succulent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Succulent; sourceTree = "<group>"; };
 		D0BD5D5480986E7F56D19900 /* Pods_Succulent_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Succulent_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D80E373A86FDD64DA9B6CDDE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		DDAA47C3AE35A85B74CB7C12 /* Pods-Succulent_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Succulent_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Succulent_Example/Pods-Succulent_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -141,7 +142,7 @@
 			children = (
 				607FACEB1AFB9204008FA782 /* Tests.swift */,
 				B827BD9A1E2C739F003256F2 /* RouterTests.swift */,
-				B827BD961E2C5146003256F2 /* Mock */,
+				B8F58B071E38633F00F6F087 /* Succulent */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -257,6 +258,7 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				B8F58B081E38633F00F6F087 /* Succulent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +266,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B827BD971E2C5146003256F2 /* Mock in Resources */,
+				B8F58B091E38633F00F6F087 /* Succulent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
