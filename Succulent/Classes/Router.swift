@@ -353,6 +353,20 @@ public struct Request {
         self.queryString = queryString
         self.headers = headers
     }
+    
+    public func header(_ needle: String) -> String? {
+        guard let headers = headers else {
+            return nil
+        }
+        
+        for (key, value) in headers {
+            if key.lowercased() == needle.lowercased() {
+                return value
+            }
+        }
+        
+        return nil
+    }
 
 }
 
@@ -371,6 +385,20 @@ public struct Response {
         self.status = status
         self.data = data
         self.contentType = contentType
+    }
+    
+    public func containsHeader(_ needle: String) -> Bool {
+        guard let headers = headers else {
+            return false
+        }
+        
+        for (key, value) in headers {
+            if key.lowercased() == needle.lowercased() {
+                return true
+            }
+        }
+        
+        return false
     }
     
 }
