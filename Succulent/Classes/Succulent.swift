@@ -1,6 +1,7 @@
 import Embassy
+import Foundation
 
-public class Succulent {
+public class Succulent : NSObject, URLSessionTaskDelegate {
     
     public var port: Int?
     public var version = 0
@@ -21,7 +22,10 @@ public class Succulent {
     
     private var lastWasMutation = false
     
-    private lazy var session = URLSession(configuration: .default)
+    private lazy var session : URLSession = {
+        let s = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        return s
+    }()
     
     public var actualPort: Int {
         return server.listenAddress.port
@@ -30,6 +34,8 @@ public class Succulent {
     public init(bundle: Bundle, relativePath: String = ".") {
         self.bundle = bundle
         self.relativePath = relativePath
+        
+        super.init()
         
         router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
@@ -347,4 +353,7 @@ public class Succulent {
         loopThreadCondition.unlock()
     }
     
+    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+        completionHandler(nil)
+    }
 }
