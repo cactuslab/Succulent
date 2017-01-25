@@ -86,6 +86,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 urlRequest.httpShouldHandleCookies = false
                 
                 let completionHandler = { (data: Data?, response: URLResponse?, error: Error?) in
+                    // TODO handle nil response, occurs when the request fails, so we need to generate a synthetic error response
                     let response = response as! HTTPURLResponse
                     let statusCode = response.statusCode
                     
