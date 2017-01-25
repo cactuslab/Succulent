@@ -23,8 +23,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var lastWasMutation = false
     
     private lazy var session : URLSession = {
-        let s = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
-        return s
+        return URLSession(configuration: .default, delegate: self, delegateQueue: nil)
     }()
     
     public var actualPort: Int {
