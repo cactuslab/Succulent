@@ -83,6 +83,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     }
                 })
                 urlRequest.httpMethod = req.method
+                urlRequest.httpShouldHandleCookies = false
                 
                 let completionHandler = { (data: Data?, response: URLResponse?, error: Error?) in
                     let response = response as! HTTPURLResponse
@@ -96,7 +97,17 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                         if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                             continue
                         }
-                        headers.append((key, header.value as! String))
+                        var value = header.value as! String
+                        
+                        if key.lowercased() == "set-cookie" {
+                            let values = Succulent.splitSetCookie(value: value)
+                            for value in values {
+                                let mungedValue = Succulent.munge(key: key, value: value)
+                                headers.append((key, mungedValue))
+                            }
+                        } else {
+                            headers.append((key, value))
+                        }
                     }
                     res.headers = headers
                     
@@ -118,6 +129,29 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 resultBlock(.response(Response(status: .notFound)))
             }
         }
+    }
+    
+    /** HttpURLRequest combines multiple set-cookies into one string separated by commas.
+        We can't just split on comma as the expires also contains a comma, so we work around it.
+     */
+    public static func splitSetCookie(value: String) -> [String] {
+        let regex = try! NSRegularExpression(pattern: "(expires\\s*=\\s*[a-z]+),", options: .caseInsensitive)
+        let apologies = regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1!!!OMG!!!")
+        
+        let split = apologies.components(separatedBy: ",")
+        
+        return split.map { (value) -> String in
+            return value.replacingOccurrences(of: "!!!OMG!!!", with: ",").trimmingCharacters(in: .whitespaces)
+        }
+    }
+    
+    public static func munge(key: String, value: String) -> String {
+        if key.lowercased() == "set-cookie" {
+            let regex = try! NSRegularExpression(pattern: "(domain\\s*=\\s*)[^;]*(;?\\s*)", options: .caseInsensitive)
+            return regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1localhost$2")
+        }
+        
+        return value
     }
     
     private func parseHeaderData(data: Data) -> (ResponseStatus, [(String, String)]) {
