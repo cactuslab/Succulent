@@ -42,6 +42,13 @@ class Tests: XCTestCase {
         }
     }
     
+    func testEncoding() {
+        GET("encodingTest%28%20%2742%27%20%29") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Hello encoding!\n")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "application/x-octet-stream")
+        }
+    }
+    
     func testQuery() {
         GET("query.txt?username=test") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
