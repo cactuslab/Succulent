@@ -66,6 +66,12 @@ class Tests: XCTestCase {
         }
     }
     
+    func testTilde() {
+        GET("~/testing.txt") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Tilde\n")
+        }
+    }
+    
     func testVersioned() {
         GET("folder/testing.txt") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Great")

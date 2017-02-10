@@ -339,6 +339,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     
     private func mockPath(for path: String, queryString: String?, method: String, version: Int, replaceExtension: String? = nil) -> String {
         let withoutExtension = (path as NSString).deletingPathExtension
+        // Xcode has difficulty with filepaths that contain the tilde character. This appears to be a bug in Xcode as the filesystem handles it fine.
+        let sanitizedPathWithoutExtension = withoutExtension.replacingOccurrences(of: "/~", with: "/tilde~")
         let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
         var querySuffix: String
@@ -349,7 +351,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             querySuffix = ""
         }
         
-        return ("/\(relativePath)\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
+        return ("/\(relativePath)\(sanitizedPathWithoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
     }
     
     private func sanitize(queryString: String) -> String {
