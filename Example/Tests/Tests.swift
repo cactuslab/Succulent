@@ -112,7 +112,7 @@ class Tests: XCTestCase {
     
     func testRecord() {
         suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
-        suc.recordBaseURL = URL(fileURLWithPath: "/Users/karlvr/Desktop/Mock/")
+        suc.recordBaseURL = URL(fileURLWithPath: "/Users/thomascarey/Desktop/Mock/")
         
         GET("index.html") { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 404)

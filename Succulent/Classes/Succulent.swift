@@ -9,10 +9,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     public var recordBaseURL: URL?
     public var ignoreParameters: Set<String>?
     
+    private let path: String
     public let router = Matching()
-    
-    private let bundle: Bundle
-    public var relativePath: String
     
     private var loop: EventLoop!
     private var server: DefaultHTTPServer!
@@ -30,11 +28,31 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         return server.listenAddress.port
     }
     
-    public init(bundle: Bundle, relativePath: String = ".") {
-        self.bundle = bundle
-        self.relativePath = relativePath
+    private var traces: [String : Trace]
+    
+    public init(path: String) {
+        self.path = path
+        traces = [String : Trace]()
         
         super.init()
+        
+        let url = URL(fileURLWithPath: path)
+        let traceReader = TraceReader(fileURL: url)
+        if let orderedTraces = traceReader.readFile() {
+            var version = 0
+            var lastWasMutation = false
+            for trace in orderedTraces {
+                if let file = trace.meta["File"], let method = trace.meta["Method"] {
+                    traces["\(version)-\(file)"] = trace
+                    if method != "GET" && method != "HEAD" {
+                        lastWasMutation = true
+                    } else if lastWasMutation {
+                        version += 1
+                        lastWasMutation = false
+                    }
+                }
+            }
+        }
         
         router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
@@ -70,7 +88,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 res.data = data
                 resultBlock(.response(res))
             } else if let passThroughBaseURL = self.passThroughBaseURL {
-                var url = URL(string: ".\(req.file)", relativeTo: passThroughBaseURL)!
+                let url = URL(string: ".\(req.file)", relativeTo: passThroughBaseURL)!
                 
                 print("Pass-through URL: \(url.absoluteURL)")
                 var urlRequest = URLRequest(url: url)
@@ -98,7 +116,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                         if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                             continue
                         }
-                        var value = header.value as! String
+                        let value = header.value as! String
                         
                         if key.lowercased() == "set-cookie" {
                             let values = Succulent.splitSetCookie(value: value)
@@ -113,6 +131,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     res.headers = headers
                     
                     try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data, response: response)
+                    try! self.recordTrace(request: req, data: data, response: response)
                     
                     res.data = data
                     
@@ -165,7 +184,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 let key = line.substring(to: r.lowerBound)
                 let value = line.substring(from: r.upperBound)
                 
-                if Succulent.dontPassBackHeaders.contains(key.lowercased()) ?? false {
+                if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                     continue
                 }
                 headers.append((key, value))
@@ -181,8 +200,9 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private func createRequest(environ: [String: Any], completion: @escaping (Request)->()) {
         let method = environ["REQUEST_METHOD"] as! String
         let path = environ["PATH_INFO"] as! String
+        let version = environ["SERVER_PROTOCOL"] as! String
         
-        var req = Request(method: method, path: path)
+        var req = Request(method: method, version: version, path: path)
         req.queryString = environ["QUERY_STRING"] as? String
         
         var headers = [(String, String)]()
@@ -232,10 +252,6 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             sendBody: @escaping ((Data) -> Void)
             ) in
             
-            let method = environ["REQUEST_METHOD"] as! String
-            let path = environ["PATH_INFO"] as! String
-            let queryString = environ["QUERY_STRING"] as? String
-            
             self.createRequest(environ: environ) { req in
                 self.router.handle(request: req) { result in
                     self.loop.call {
@@ -276,6 +292,27 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         loopThread.start()
     }
     
+    private func recordTrace(request: Request, data: Data?, response: HTTPURLResponse) throws {
+        guard let recordBaseURL = self.recordBaseURL else {
+            return
+        }
+        
+        let traceURL = URL(string: "./trace.trace", relativeTo: recordBaseURL)!
+        
+        //Record Metadata
+        let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseURL?.scheme, host: self.passThroughBaseURL?.host, file: request.path, version: "HTTP/1.1")
+
+        let tracer = TraceWriter(fileURL: traceURL)
+        let token = NSUUID().uuidString
+        
+        try tracer.writeComponent(component: .meta, content: traceMeta, token: token)
+        
+        try tracer.writeComponent(component: .responseHeader, content: response, token: token)
+        if let data = data {
+            try tracer.writeComponent(component: .responseBody, content: data, token: token)
+        }
+    }
+    
     private func record(for path: String, queryString: String?, method: String, data: Data?, response: HTTPURLResponse) throws {
         guard let recordBaseURL = self.recordBaseURL else {
             return
@@ -296,6 +333,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             
             try headersData.write(to: headersURL)
         }
+        
+        
+        
+        
+        //Record Request Header
         
     }
     
@@ -412,3 +454,4 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         completionHandler(nil)
     }
 }
+
