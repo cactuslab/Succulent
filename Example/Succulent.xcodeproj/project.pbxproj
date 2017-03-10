@@ -14,6 +14,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		983A99211E70FCE600C0FEF9 /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983A99201E70FCE600C0FEF9 /* TraceTests.swift */; };
 		B827BD9B1E2C739F003256F2 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B827BD9A1E2C739F003256F2 /* RouterTests.swift */; };
 		B8F58B081E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
 		B8F58B091E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
@@ -46,6 +47,7 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		88FDAF260577A4CFB4E2B266 /* Pods-Succulent_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Succulent_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Succulent_Example/Pods-Succulent_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		8A7D5F72DAC9F3C63A2D2BB4 /* Pods_Succulent_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Succulent_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		983A99201E70FCE600C0FEF9 /* TraceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TraceTests.swift; sourceTree = "<group>"; };
 		A7D321DBFDE0C96D3D3CDE84 /* Succulent.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Succulent.podspec; path = ../Succulent.podspec; sourceTree = "<group>"; };
 		B827BD9A1E2C739F003256F2 /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 		B8F58B071E38633F00F6F087 /* Succulent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Succulent; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			children = (
 				607FACEB1AFB9204008FA782 /* Tests.swift */,
 				B827BD9A1E2C739F003256F2 /* RouterTests.swift */,
+				983A99201E70FCE600C0FEF9 /* TraceTests.swift */,
 				B8F58B071E38633F00F6F087 /* Succulent */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
@@ -381,6 +384,7 @@
 			files = (
 				B827BD9B1E2C739F003256F2 /* RouterTests.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+				983A99211E70FCE600C0FEF9 /* TraceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

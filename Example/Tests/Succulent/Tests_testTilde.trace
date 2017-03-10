@@ -1,0 +1,12 @@
+HTTP-Trace-Version: 1.0
+Generator: Succulent/1.0
+
+
+Method: GET
+Protocol-Version: HTTP/1.1
+Protocol: http
+Host: www.cactuslab.com
+File: /~/testing.txt
+Response-Body:<<--EOF-1-
+Tilde
+--EOF-1-
