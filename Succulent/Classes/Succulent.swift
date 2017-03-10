@@ -6,10 +6,9 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     public var port: Int?
     public var version = 0
     public var passThroughBaseURL: URL?
-    public var recordBaseURL: URL?
+    public var recordURL: URL?
     public var ignoreParameters: Set<String>?
     
-    private let path: String
     public let router = Matching()
     
     private var loop: EventLoop!
@@ -28,30 +27,47 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         return server.listenAddress.port
     }
     
-    private var traces: [String : Trace]
+    private let queryPathSplitterRegex = try! NSRegularExpression(pattern: "^([^\\?]+)\\??(.*)?$", options: [])
     
-    public init(path: String) {
-        self.path = path
+    private var traces: [String : Trace]
+    private var currentTrace = NSMutableOrderedSet()
+    
+    public init(traceURL: URL?, recordingURL: URL?, recordingMode: Bool) {
         traces = [String : Trace]()
+        self.recordURL = recordingURL
         
         super.init()
         
-        let url = URL(fileURLWithPath: path)
-        let traceReader = TraceReader(fileURL: url)
-        if let orderedTraces = traceReader.readFile() {
-            var version = 0
-            var lastWasMutation = false
-            for trace in orderedTraces {
-                if let file = trace.meta["File"], let method = trace.meta["Method"] {
-                    traces["\(version)-\(file)"] = trace
-                    if method != "GET" && method != "HEAD" {
-                        lastWasMutation = true
-                    } else if lastWasMutation {
-                        version += 1
-                        lastWasMutation = false
+        if let url = traceURL, !recordingMode {
+            let traceReader = TraceReader(fileURL: url)
+            if let orderedTraces = traceReader.readFile() {
+                var version = 0
+                var lastWasMutation = false
+                for trace in orderedTraces {
+                    if let file = trace.meta.file, let method = trace.meta.method {
+                        
+                        let matches = queryPathSplitterRegex.matches(in: file, options: [], range: file.nsrange)
+                        let path = file.substring(with: matches[0].rangeAt(1))!
+                        let query = file.substring(with: matches[0].rangeAt(2))
+                        
+                        if method != "GET" && method != "HEAD" {
+                            lastWasMutation = true
+                        } else if lastWasMutation {
+                            version += 1
+                            lastWasMutation = false
+                        }
+                        
+                        let key = mockPath(for: path, queryString: query, method: method, version: version)
+                        
+                        traces[key] = trace
                     }
                 }
             }
+        }
+        
+        if let recordingURL = recordingURL, recordingMode {
+            //Throw away the previous trace
+            try? FileManager.default.removeItem(at: recordingURL)
         }
         
         router.add(".*").anyParams().block { (req, resultBlock) in
@@ -63,29 +79,26 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 self.lastWasMutation = false
             }
             
-            if let url = self.url(for: req.path, queryString: req.queryString, method: req.method) {
-                let data = try! Data(contentsOf: url)
-                
+            if let trace = self.trace(for: req.path, queryString: req.queryString, method: req.method) {
+
                 var status = ResponseStatus.ok
                 var headers: [(String, String)]?
                 
-                if let headersUrl = self.url(for: req.path, queryString: req.queryString, method: req.method, replaceExtension: "head") {
-                    if let headerData = try? Data(contentsOf: headersUrl) {
-                        let (aStatus, aHeaders) = self.parseHeaderData(data: headerData)
-                        status = aStatus
-                        headers = aHeaders
-                    }
+                if let headerData = trace.responseHeader {
+                    let (aStatus, aHeaders) = self.parseHeaderData(data: headerData)
+                    status = aStatus
+                    headers = aHeaders
                 }
                 
                 if headers == nil {
-                    let contentType = self.contentType(for: url)
+                    let contentType = self.contentType(for: req.path)
                     headers = [("Content-Type", contentType)]
                 }
                 
                 var res = Response(status: status)
                 res.headers = headers
                 
-                res.data = data
+                res.data = trace.responseBody
                 resultBlock(.response(res))
             } else if let passThroughBaseURL = self.passThroughBaseURL {
                 let url = URL(string: ".\(req.file)", relativeTo: passThroughBaseURL)!
@@ -130,8 +143,10 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     }
                     res.headers = headers
                     
-                    try! self.record(for: req.path, queryString: req.queryString, method: req.method, data: data, response: response)
-                    try! self.recordTrace(request: req, data: data, response: response)
+                    if (recordingMode) {
+                        try! self.recordTrace(request: req, data: data, response: response)
+                    }
+                    
                     
                     res.data = data
                     
@@ -175,8 +190,10 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     private func parseHeaderData(data: Data) -> (ResponseStatus, [(String, String)]) {
-        let lines = String(data: data, encoding: .utf8)!.components(separatedBy: "\r\n")
-        let statusCode = ResponseStatus.other(code: Int(lines[0])!)
+        let lines = String(data: data, encoding: .utf8)!.components(separatedBy: CharacterSet.newlines)
+        
+        let statusLineComponents = lines[0].components(separatedBy: CharacterSet.whitespaces)
+        let statusCode = ResponseStatus.other(code: Int(statusLineComponents[1])!)
         var headers = [(String, String)]()
         
         for line in lines.dropFirst() {
@@ -293,11 +310,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     private func recordTrace(request: Request, data: Data?, response: HTTPURLResponse) throws {
-        guard let recordBaseURL = self.recordBaseURL else {
+        guard let recordURL = self.recordURL else {
             return
         }
         
-        let traceURL = URL(string: "./trace.trace", relativeTo: recordBaseURL)!
+        let traceURL = recordURL
         
         //Record Metadata
         let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseURL?.scheme, host: self.passThroughBaseURL?.host, file: request.path, version: "HTTP/1.1")
@@ -311,34 +328,6 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         if let data = data {
             try tracer.writeComponent(component: .responseBody, content: data, token: token)
         }
-    }
-    
-    private func record(for path: String, queryString: String?, method: String, data: Data?, response: HTTPURLResponse) throws {
-        guard let recordBaseURL = self.recordBaseURL else {
-            return
-        }
-        
-        let resource = sanitize(pathForURL: mockPath(for: path, queryString: queryString, method: method, version: version))
-        let recordURL = URL(string: ".\(resource)", relativeTo: recordBaseURL)!
-        
-        try FileManager.default.createDirectory(at: recordURL.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
-        
-        if let data = data {
-            try data.write(to: recordURL)
-        }
-        
-        if let headersData = headerData(response: response) {
-            let headersResource = sanitize(pathForURL: mockPath(for: path, queryString: queryString, method: method, version: version, replaceExtension: "head"))
-            let headersURL = URL(string: ".\(headersResource)", relativeTo: recordBaseURL)!
-            
-            try headersData.write(to: headersURL)
-        }
-        
-        
-        
-        
-        //Record Request Header
-        
     }
     
     private func sanitize(pathForURL path: String) -> String {
@@ -361,39 +350,38 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         return string.data(using: .utf8)
     }
     
-    private func url(for path: String, queryString: String?, method: String, replaceExtension: String? = nil) -> URL? {
+    private func trace(for path: String, queryString: String?, method: String, replaceExtension: String? = nil) -> Trace? {
+        
         var searchVersion = version
         while searchVersion >= 0 {
             let resource = mockPath(for: path, queryString: queryString, method: method, version: searchVersion, replaceExtension: replaceExtension)
             
-            if let resourceName = "Succulent\(resource)".removingPercentEncoding {
-                if let url = self.bundle.url(forResource: resourceName, withExtension: nil) {
-                    return url
-                }
+            if let trace = traces[resource] {
+                return trace
             }
-            
             
             searchVersion -= 1
         }
         
         return nil
+        
     }
+    
     
     private func mockPath(for path: String, queryString: String?, method: String, version: Int, replaceExtension: String? = nil) -> String {
         let withoutExtension = (path as NSString).deletingPathExtension
-        // Xcode has difficulty with filepaths that contain the tilde character. This appears to be a bug in Xcode as the filesystem handles it fine.
-        let sanitizedPathWithoutExtension = withoutExtension.replacingOccurrences(of: "/~", with: "/tilde~")
+        
         let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
         var querySuffix: String
-        if let queryString = queryString {
+        if let queryString = queryString, queryString.characters.count > 0 {
             let sanitizedQueryString = sanitize(queryString: queryString)
             querySuffix = "?\(sanitizedQueryString)"
         } else {
             querySuffix = ""
         }
         
-        return ("/\(relativePath)\(sanitizedPathWithoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
+        return ("/\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
     }
     
     private func sanitize(queryString: String) -> String {
@@ -414,8 +402,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         return result
     }
     
-    private func contentType(for url: URL) -> String {
-        var path = url.path
+    private func contentType(for path: String) -> String {
+        var path = path
         if let r = path.range(of: "?", options: .backwards) {
             path = path.substring(to: r.lowerBound)
         }

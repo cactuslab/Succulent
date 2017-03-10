@@ -41,6 +41,18 @@ internal struct TraceMeta: Traceable {
         
         return "\n\(trace.joined(separator: "\n"))"
     }
+    
+    init(method: String?, protocolScheme: String?, host: String?, file: String?, version: String?) {
+        self.method = method
+        self.protocolScheme = protocolScheme
+        self.host = host
+        self.file = file
+        self.version = version
+    }
+    
+    init(dictionary: [String: String]) {
+        self = TraceMeta(method: dictionary["Method"], protocolScheme: dictionary["Protocol"], host: dictionary["Host"], file: dictionary["File"], version: dictionary["Protocol-Version"])
+    }
 }
 
 extension Request: Traceable {
@@ -62,7 +74,7 @@ extension HTTPURLResponse: Traceable {
     var traceFormat: String {
         var trace = [String]()
         
-        trace.append("\(statusCode) HTTP/1.1")
+        trace.append("HTTP/1.1 \(statusCode)")
         self.allHeaderFields.forEach { (key, value) in
             trace.append("\(key): \(value)")
         }
@@ -98,8 +110,8 @@ class TraceWriter {
         }
         
         func footerPart(token: String) -> String {
-            if let name = self.name {
-                return "\n\n--EOF-\(token)-\n"
+            if let _ = self.name {
+                return "\n--EOF-\(token)-\n"
             } else {
                 return "\n"
             }
@@ -167,13 +179,13 @@ extension Data {
     }
 }
 
-public struct Trace {
-    var meta : [String: String]
-    var responseHeader : Data
+struct Trace {
+    var meta : TraceMeta
+    var responseHeader : Data?
     var responseBody: Data
 }
 
-public class TraceReader {
+class TraceReader {
     
     let fileURL: URL
     let delimiter = "\n"
@@ -181,12 +193,11 @@ public class TraceReader {
     let tokenStartRegex = try! NSRegularExpression(pattern: "^(.+):<<--EOF-(.+)-$", options: [])
     let metaRegex = try! NSRegularExpression(pattern: "^(.+): (.+)$", options: [])
     
-    public init(fileURL: URL) {
+    init(fileURL: URL) {
         self.fileURL = fileURL
     }
     
-    
-    public func readFile() -> [Trace]? {
+    func readFile() -> [Trace]? {
         guard let fileHandle = FileHandle(forReadingAtPath: fileURL.path) else {
             return nil
         }
@@ -242,7 +253,9 @@ public class TraceReader {
     private func consumeTrace(fileHandle: FileHandle) -> Trace? {
     
         while(testForEmptyLine(fileHandle: fileHandle)) {
-            consumeLines(count: 1, fileHandle: fileHandle)
+            if !consumeLines(count: 1, fileHandle: fileHandle) {
+                return nil
+            }
         }
         
         var meta = [String: String]()
@@ -282,8 +295,8 @@ public class TraceReader {
             }
         }
         
-        if let responseHeader = responseHeader, let responseBody = responseBody {
-            return Trace(meta: meta, responseHeader: responseHeader, responseBody: responseBody)
+        if let responseBody = responseBody {
+            return Trace(meta: TraceMeta(dictionary: meta), responseHeader: responseHeader, responseBody: responseBody)
         }
         return nil
     }
@@ -338,16 +351,7 @@ public class TraceReader {
     }
     
     private func testForToken(fileHandle: FileHandle, token:String) -> Bool {
-        if testForEmptyLine(fileHandle: fileHandle) {
-            let startingOffset = fileHandle.offsetInFile
-            defer {
-                fileHandle.seek(toFileOffset: startingOffset)
-            }
-            consumeLines(count: 1, fileHandle: fileHandle)
-            
-            return testFor("--EOF-\(token)-", fileHandle: fileHandle)
-        }
-        return false
+        return testFor("--EOF-\(token)-", fileHandle: fileHandle)
     }
     
     private func testFor(_ str :String, fileHandle: FileHandle) -> Bool {
@@ -357,7 +361,7 @@ public class TraceReader {
         }
         if let data = fileHandle.readLine(withDelimiter: delimiter) {
             if let line = String(data: data, encoding: .utf8) {
-                if line == "\(str)\n" {
+                if line == "\(str)\(delimiter)" {
                     return true
                 }
             }
@@ -365,8 +369,8 @@ public class TraceReader {
         return false
     }
     
-    private func consumeToken(fileHandle: FileHandle) {
-        consumeLines(count: 2, fileHandle: fileHandle)
+    private func consumeToken(fileHandle: FileHandle) -> Bool {
+        return consumeLines(count: 1, fileHandle: fileHandle)
     }
     
     private func consumeLines(count: Int, fileHandle: FileHandle) -> Bool {
@@ -391,9 +395,10 @@ public class TraceReader {
         let endingOffset = fileHandle.offsetInFile
         fileHandle.seek(toFileOffset: startingOffset)
         
-        let data = fileHandle.readData(ofLength: Int(endingOffset - startingOffset))
+        let data = fileHandle.readData(ofLength: Int(endingOffset - UInt64(fileHandle.delimiterLength(delimiter)) - startingOffset))
         
-        consumeToken(fileHandle: fileHandle)
+        fileHandle.seek(toFileOffset: endingOffset)
+        let _ = consumeToken(fileHandle: fileHandle)
         
         return data
     }

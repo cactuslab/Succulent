@@ -8,86 +8,91 @@
 #import "NSFileHandle+readLine.h"
 
 @implementation NSFileHandle (readLine)
-    
+
+- (NSUInteger)delimiterLength:(NSString *)theDelimiter {
+    NSData *delimiterData = [theDelimiter dataUsingEncoding:NSASCIIStringEncoding];
+    return [delimiterData length];
+}
+
 - (NSData *)readLineWithDelimiter:(NSString *)theDelimiter
+{
+    NSUInteger bufferSize = 1024; // Set our buffer size
+    
+    // Read the delimiter string into a C string
+    NSData *delimiterData = [theDelimiter dataUsingEncoding:NSASCIIStringEncoding];
+    const char *delimiter = [delimiterData bytes];
+    
+    NSUInteger delimiterIndex = 0;
+    
+    NSData *lineData; // Our buffer of data
+    
+    unsigned long long currentPosition = [self offsetInFile];
+    NSUInteger positionOffset = 0;
+    
+    BOOL hasData = YES;
+    BOOL lineBreakFound = NO;
+    
+    while (lineBreakFound == NO && hasData == YES)
     {
-        NSUInteger bufferSize = 1024; // Set our buffer size
+        // Fill our buffer with data
+        lineData = [self readDataOfLength:bufferSize];
         
-        // Read the delimiter string into a C string
-        NSData *delimiterData = [theDelimiter dataUsingEncoding:NSASCIIStringEncoding];
-        const char *delimiter = [delimiterData bytes];
-        
-        NSUInteger delimiterIndex = 0;
-        
-        NSData *lineData; // Our buffer of data
-        
-        unsigned long long currentPosition = [self offsetInFile];
-        NSUInteger positionOffset = 0;
-        
-        BOOL hasData = YES;
-        BOOL lineBreakFound = NO;
-        
-        while (lineBreakFound == NO && hasData == YES)
+        // If our buffer gets some data, proceed
+        if ([lineData length] > 0)
         {
-            // Fill our buffer with data
-            lineData = [self readDataOfLength:bufferSize];
+            // Get a pointer to our buffer's raw data
+            const char *buffer = [lineData bytes];
             
-            // If our buffer gets some data, proceed
-            if ([lineData length] > 0)
+            // Loop over the raw data, byte-by-byte
+            for (int i = 0; i < [lineData length]; i++)
             {
-                // Get a pointer to our buffer's raw data
-                const char *buffer = [lineData bytes];
-                
-                // Loop over the raw data, byte-by-byte
-                for (int i = 0; i < [lineData length]; i++)
+                // If the current character matches a character in the delimiter sequence...
+                if (buffer[i] == delimiter[delimiterIndex])
                 {
-                    // If the current character matches a character in the delimiter sequence...
-                    if (buffer[i] == delimiter[delimiterIndex])
+                    delimiterIndex++; // Move to the next char of the delimiter sequence
+                    
+                    if (delimiterIndex >= [delimiterData length])
                     {
-                        delimiterIndex++; // Move to the next char of the delimiter sequence
-                        
-                        if (delimiterIndex >= [delimiterData length])
-                        {
-                            // If we've found all of the delimiter characters, break out of the loop
-                            lineBreakFound = YES;
-                            positionOffset += i + 1;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // Otherwise, reset the current delimiter character offset
-                        delimiterIndex = 0;
+                        // If we've found all of the delimiter characters, break out of the loop
+                        lineBreakFound = YES;
+                        positionOffset += i + 1;
+                        break;
                     }
                 }
-                
-                if (lineBreakFound == NO)
+                else
                 {
-                    positionOffset += [lineData length];
+                    // Otherwise, reset the current delimiter character offset
+                    delimiterIndex = 0;
                 }
             }
-            else
+            
+            if (lineBreakFound == NO)
             {
-                hasData = NO;
-                break;
+                positionOffset += [lineData length];
             }
-        }
-        
-        // Use positionOffset to determine the string to return...
-        
-        // Return to the start of this line
-        [self seekToFileOffset:currentPosition];
-        
-        NSData *returnData = [self readDataOfLength:positionOffset];
-        
-        if ([returnData length] > 0)
-        {
-            return returnData;
         }
         else
         {
-            return nil;
+            hasData = NO;
+            break;
         }
     }
     
-    @end
+    // Use positionOffset to determine the string to return...
+    
+    // Return to the start of this line
+    [self seekToFileOffset:currentPosition];
+    
+    NSData *returnData = [self readDataOfLength:positionOffset];
+    
+    if ([returnData length] > 0)
+    {
+        return returnData;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+@end

@@ -12,7 +12,10 @@ class Tests: XCTestCase {
         super.setUp()
         
         let bundle = Bundle(for: type(of: self))
-        suc = Succulent(bundle: bundle)
+        let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
+        
+        let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent")
+        suc = Succulent(traceURL: traceURL, recordingURL: nil, recordingMode: false)
         suc.start()
         
         baseURL = URL(string: "http://localhost:\(suc.actualPort)")
@@ -37,6 +40,11 @@ class Tests: XCTestCase {
         }
         
         GET("testing.txt") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Hello!\n")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "text/plain")
+        }
+        
+        GET("testing.txt?") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Hello!\n")
             XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "text/plain")
         }
@@ -68,7 +76,7 @@ class Tests: XCTestCase {
     
     func testTilde() {
         GET("~/testing.txt") { (data, response, error) in
-            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Tilde\n")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Tilde")
         }
     }
     
@@ -95,7 +103,7 @@ class Tests: XCTestCase {
         
         GET("testing.txt") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
-            XCTAssert(string == "Hello!\n")
+            XCTAssert(string == "Hello!")
         }
         
         XCTAssertEqual(1, suc.version)
@@ -105,17 +113,6 @@ class Tests: XCTestCase {
         suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
         
         GET("index.html") { (data, response, error) in
-            let string = String(data: data!, encoding: .utf8)!
-            XCTAssertTrue(string.endIndex > string.startIndex)
-        }
-    }
-    
-    func testRecord() {
-        suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
-        suc.recordBaseURL = URL(fileURLWithPath: "/Users/thomascarey/Desktop/Mock/")
-        
-        GET("index.html") { (data, response, error) in
-            XCTAssertEqual(response?.statusCode, 404)
             let string = String(data: data!, encoding: .utf8)!
             XCTAssertTrue(string.endIndex > string.startIndex)
         }
