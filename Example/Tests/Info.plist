@@ -20,5 +20,7 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>TraceOutputDirectory</key>
+	<string>$(SRCROOT)/TraceRecordings/</string>
 </dict>
 </plist>

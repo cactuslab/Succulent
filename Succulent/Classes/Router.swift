@@ -320,6 +320,7 @@ public enum RequestMethod: String {
 
 public struct Request {
 
+    public var version: String
     public var method: String
     public var path: String
     public var queryString: String?
@@ -336,20 +337,23 @@ public struct Request {
         }
     }
 
-    public init(method: String = RequestMethod.GET.rawValue, path: String) {
+    public init(method: String = RequestMethod.GET.rawValue, version: String = "HTTP/1.1", path: String) {
         self.method = method
         self.path = path
+        self.version = version
     }
 
-    public init(method: String = RequestMethod.GET.rawValue, path: String, queryString: String?) {
+    public init(method: String = RequestMethod.GET.rawValue, version: String = "HTTP/1.1", path: String, queryString: String?) {
         self.method = method
         self.path = path
+        self.version = version
         self.queryString = queryString
     }
     
-    public init(method: String = RequestMethod.GET.rawValue, path: String, queryString: String?, headers: [(String, String)]?) {
+    public init(method: String = RequestMethod.GET.rawValue, version: String = "HTTP/1.1", path: String, queryString: String?, headers: [(String, String)]?) {
         self.method = method
         self.path = path
+        self.version = version
         self.queryString = queryString
         self.headers = headers
     }
