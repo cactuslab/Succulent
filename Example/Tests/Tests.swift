@@ -66,6 +66,10 @@ class Tests: XCTestCase {
         GET("query.txt?username=fail") { (data, response, error) in
             XCTAssert(response?.statusCode == 404)
         }
+        
+        GET("query.txt") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+        }
     }
     
     func testNested() {

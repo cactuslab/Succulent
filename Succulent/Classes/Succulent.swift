@@ -31,6 +31,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     
     private var traces: [String : Trace]
     private var currentTrace = NSMutableOrderedSet()
+    private var recordedKeys = Set<String>()
     
     public init(traceURL: URL?, recordingURL: URL?, recordingMode: Bool) {
         traces = [String : Trace]()
@@ -316,8 +317,17 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         
         let traceURL = recordURL
         
+        let key = mockPath(for: request.path, queryString: request.queryString, method: request.method, version: version)
+        guard !recordedKeys.contains(key) else {
+            return
+        }
+        
         //Record Metadata
-        let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseURL?.scheme, host: self.passThroughBaseURL?.host, file: request.path, version: "HTTP/1.1")
+        var path = request.path
+        if let query = request.queryString {
+            path.append("?\(query)")
+        }
+        let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseURL?.scheme, host: self.passThroughBaseURL?.host, file: path, version: "HTTP/1.1")
 
         let tracer = TraceWriter(fileURL: traceURL)
         let token = NSUUID().uuidString
@@ -328,6 +338,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         if let data = data {
             try tracer.writeComponent(component: .responseBody, content: data, token: token)
         }
+        
+        recordedKeys.insert(key)
     }
     
     private func sanitize(pathForURL path: String) -> String {
