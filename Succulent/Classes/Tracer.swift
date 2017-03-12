@@ -174,6 +174,8 @@ extension Data {
             fileHandle.write(self)
         }
         else {
+            let directoryURL = fileURL.deletingLastPathComponent()
+            try? FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
             try write(to: fileURL, options: .atomic)
         }
     }
