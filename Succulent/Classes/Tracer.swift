@@ -79,7 +79,7 @@ extension HTTPURLResponse: Traceable {
             trace.append("\(key): \(value)")
         }
         
-        return trace.joined(separator: "\n")
+        return trace.joined(separator: "\n").appending("\n")
     }
 }
 
