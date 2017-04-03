@@ -392,7 +392,7 @@ public struct Response {
             return false
         }
         
-        for (key, value) in headers {
+        for (key, _) in headers {
             if key.lowercased() == needle.lowercased() {
                 return true
             }
