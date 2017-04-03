@@ -287,24 +287,20 @@ public class Matcher {
     }
 
     func handle(request: Request, resultBlock: @escaping RoutingResultBLock) {
-        do {
-            if let responder = responder {
-                responder.respond(request: request) { (result) in
-                    resultBlock(result)
-                    
-                    if let thenBlock = self.thenBlock {
-                        thenBlock()
-                    }
-                }
-            } else {
-                resultBlock(.response(Response(status: .notFound)))
+        if let responder = responder {
+            responder.respond(request: request) { (result) in
+                resultBlock(result)
                 
-                if let thenBlock = thenBlock {
+                if let thenBlock = self.thenBlock {
                     thenBlock()
                 }
             }
-        } catch {
-            resultBlock(.error(error))
+        } else {
+            resultBlock(.response(Response(status: .notFound)))
+            
+            if let thenBlock = thenBlock {
+                thenBlock()
+            }
         }
     }
 
