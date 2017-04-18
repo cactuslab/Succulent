@@ -16,6 +16,8 @@ class Tests: XCTestCase {
         
         let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent")
         suc = Succulent(traceURL: traceURL, recordingURL: nil, recordingMode: false)
+        suc.ignoreParameters = ["ignoreMe"]
+        
         suc.start()
         
         baseURL = URL(string: "http://localhost:\(suc.actualPort)")
@@ -56,6 +58,20 @@ class Tests: XCTestCase {
             XCTAssertEqual(response?.allHeaderFields["Content-Type"] as! String, "application/x-octet-stream")
         }
     }
+    
+    func testIgnoredParameters() {
+        
+        GET("query.txt?username=test&ignoreMe=1209") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
+        
+        GET("query.txt?username=test&dontIgnoreMe=1209") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+        }
+        
+    }
+    
     
     func testQuery() {
         GET("query.txt?username=test") { (data, response, error) in

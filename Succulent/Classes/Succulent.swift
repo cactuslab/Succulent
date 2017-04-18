@@ -325,7 +325,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         //Record Metadata
         var path = request.path
         if let query = request.queryString {
-            path.append("?\(query)")
+            path.append("?\(sanitize(queryString: query))")
         }
         let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseURL?.scheme, host: self.passThroughBaseURL?.host, file: path, version: "HTTP/1.1")
 
