@@ -79,7 +79,7 @@ extension HTTPURLResponse: Traceable {
             trace.append("\(key): \(value)")
         }
         
-        return trace.joined(separator: "\n")
+        return trace.joined(separator: "\n").appending("\n")
     }
 }
 
@@ -174,6 +174,8 @@ extension Data {
             fileHandle.write(self)
         }
         else {
+            let directoryURL = fileURL.deletingLastPathComponent()
+            try? FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
             try write(to: fileURL, options: .atomic)
         }
     }
