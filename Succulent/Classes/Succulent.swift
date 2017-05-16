@@ -40,45 +40,12 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var traces: [String : Trace]
     private var currentTrace = NSMutableOrderedSet()
     private var recordedKeys = Set<String>()
-    
-    public init(traceURL: URL?, recordingURL: URL?, recordingMode: Bool) {
+
+    public override init() {
         traces = [String : Trace]()
-        self.recordURL = recordingURL
         
         super.init()
-        
-        if let url = traceURL, !recordingMode {
-            let traceReader = TraceReader(fileURL: url)
-            if let orderedTraces = traceReader.readFile() {
-                var version = 0
-                var lastWasMutation = false
-                for trace in orderedTraces {
-                    if let file = trace.meta.file, let method = trace.meta.method {
-                        
-                        let matches = queryPathSplitterRegex.matches(in: file, options: [], range: file.nsrange)
-                        let path = file.substring(with: matches[0].rangeAt(1))!
-                        let query = file.substring(with: matches[0].rangeAt(2))
-                        
-                        if method != "GET" && method != "HEAD" {
-                            lastWasMutation = true
-                        } else if lastWasMutation {
-                            version += 1
-                            lastWasMutation = false
-                        }
-                        
-                        let key = mockPath(for: path, queryString: query, method: method, version: version)
-                        
-                        traces[key] = trace
-                    }
-                }
-            }
-        }
-        
-        if let recordingURL = recordingURL, recordingMode {
-            //Throw away the previous trace
-            try? FileManager.default.removeItem(at: recordingURL)
-        }
-        
+
         router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
             if req.method != "GET" && req.method != "HEAD" {
@@ -87,36 +54,36 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 self.version += 1
                 self.lastWasMutation = false
             }
-            
+
             if let trace = self.trace(for: req.path, queryString: req.queryString, method: req.method) {
 
                 var status = ResponseStatus.ok
                 var headers: [(String, String)]?
-                
+
                 if let headerData = trace.responseHeader {
                     let (aStatus, aHeaders) = self.parseHeaderData(data: headerData)
                     status = aStatus
                     headers = aHeaders
                 }
-                
+
                 if headers == nil {
                     let contentType = self.contentType(for: req.path)
                     headers = [("Content-Type", contentType)]
                 }
-                
+
                 var res = Response(status: status)
                 res.headers = headers
-                
+
                 res.data = trace.responseBody
                 resultBlock(.response(res))
             } else if let passThroughBaseURL = self.passThroughBaseURL {
                 let url = URL(string: ".\(req.file)", relativeTo: passThroughBaseURL)!
-                
+
                 print("Pass-through URL: \(url.absoluteURL)")
                 var urlRequest = URLRequest(url: url)
                 req.headers?.forEach({ (key, value) in
                     let fixedKey = key.replacingOccurrences(of: "_", with: "-").capitalized
-                    
+
                     if !Succulent.dontPassThroughHeaders.contains(fixedKey.lowercased()) {
                         urlRequest.addValue(value, forHTTPHeaderField: fixedKey)
                     }
@@ -124,14 +91,14 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 urlRequest.httpMethod = req.method
                 urlRequest.httpShouldHandleCookies = false
                 urlRequest.cachePolicy = .reloadIgnoringLocalCacheData
-                
+
                 let completionHandler = { (data: Data?, response: URLResponse?, error: Error?) in
                     // TODO handle nil response, occurs when the request fails, so we need to generate a synthetic error response
                     let response = response as! HTTPURLResponse
                     let statusCode = response.statusCode
-                    
+
                     var res = Response(status: .other(code: statusCode))
-                    
+
                     var headers = [(String, String)]()
                     for header in response.allHeaderFields {
                         let key = (header.key as! String)
@@ -139,7 +106,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                             continue
                         }
                         let value = header.value as! String
-                        
+
                         if key.lowercased() == "set-cookie" {
                             let values = Succulent.splitSetCookie(value: value)
                             for value in values {
@@ -151,17 +118,14 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                         }
                     }
                     res.headers = headers
-                    
-                    if (recordingMode) {
-                        try! self.recordTrace(request: req, data: data, response: response)
-                    }
-                    
-                    
+
+                    try! self.recordTrace(request: req, data: data, response: response)
+
                     res.data = data
-                    
+
                     resultBlock(.response(res))
                 }
-                
+
                 if let body = req.body {
                     let uploadTask = self.session.uploadTask(with: urlRequest, from: body, completionHandler: completionHandler)
                     uploadTask.resume()
@@ -173,6 +137,44 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 resultBlock(.response(Response(status: .notFound)))
             }
         }
+    }
+
+    public convenience init(traceURL: URL) {
+        self.init()
+
+        let traceReader = TraceReader(fileURL: traceURL)
+        if let orderedTraces = traceReader.readFile() {
+            var version = 0
+            var lastWasMutation = false
+            for trace in orderedTraces {
+                if let file = trace.meta.file, let method = trace.meta.method {
+
+                    let matches = queryPathSplitterRegex.matches(in: file, options: [], range: file.nsrange)
+                    let path = file.substring(with: matches[0].rangeAt(1))!
+                    let query = file.substring(with: matches[0].rangeAt(2))
+
+                    if method != "GET" && method != "HEAD" {
+                        lastWasMutation = true
+                    } else if lastWasMutation {
+                        version += 1
+                        lastWasMutation = false
+                    }
+
+                    let key = mockPath(for: path, queryString: query, method: method, version: version)
+
+                    traces[key] = trace
+                }
+            }
+        }
+    }
+
+    public convenience init(recordingURL: URL) {
+        self.init()
+
+        self.recordURL = recordingURL
+
+        //Throw away the previous trace
+        try? FileManager.default.removeItem(at: recordingURL)
     }
     
     /** HttpURLRequest combines multiple set-cookies into one string separated by commas.

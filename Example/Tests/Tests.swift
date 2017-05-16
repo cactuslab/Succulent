@@ -14,8 +14,11 @@ class Tests: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
         
-        let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent")
-        suc = Succulent(traceURL: traceURL, recordingURL: nil, recordingMode: false)
+        if let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent") {
+            suc = Succulent(traceURL: traceURL)
+        } else {
+            suc = Succulent()
+        }
         suc.ignoreParameters = ["ignoreMe"]
         
         suc.start()
