@@ -11,12 +11,12 @@ import Succulent
 
 class RouterTests: XCTestCase {
     
-    var mock: Matching!
+    var mock: Router!
     
     override func setUp() {
         super.setUp()
     
-        mock = Matching()
+        mock = Router()
     }
     
     override func tearDown() {

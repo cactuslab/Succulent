@@ -1,18 +1,21 @@
 //
 //  Tracer.swift
-//  Pods
+//  Succulent
 //
 //  Created by Thomas Carey on 6/03/17.
-//
+//  Copyright © 2017 Cactuslab. All rights reserved.
 //
 
 import Foundation
 
+/// Provides support for reading and writing the trace format from Charles Proxy
+
+/// Conform to this protocol if you output to the trace format
 protocol Traceable {
     var traceFormat: String { get }
 }
 
-internal struct TraceMeta: Traceable {
+struct TraceMeta: Traceable {
     
     var method: String?
     var protocolScheme: String?
@@ -21,7 +24,6 @@ internal struct TraceMeta: Traceable {
     var version: String?
     
     var traceFormat: String {
-        
         var trace = [String]()
         if let method = method {
             trace.append("Method: \(method)")
@@ -58,7 +60,6 @@ internal struct TraceMeta: Traceable {
 extension Request: Traceable {
     
     var traceFormat: String {
-        
         var trace = [String]()
         trace.append("\(method) \(path)")
         self.headers?.forEach({ (key, value) in
@@ -67,6 +68,7 @@ extension Request: Traceable {
         
         return trace.joined(separator: "\n")
     }
+
 }
 
 extension HTTPURLResponse: Traceable {
@@ -154,18 +156,18 @@ class TraceWriter {
 }
 
 extension String {
-    func appendLineToURL(fileURL: URL) throws {
+    fileprivate func appendLineToURL(fileURL: URL) throws {
         try (self + "\n").appendToURL(fileURL: fileURL)
     }
     
-    func appendToURL(fileURL: URL) throws {
+    fileprivate func appendToURL(fileURL: URL) throws {
         let data = self.data(using: String.Encoding.utf8)!
         try data.append(fileURL: fileURL)
     }
 }
 
 extension Data {
-    func append(fileURL: URL) throws {
+    fileprivate func append(fileURL: URL) throws {
         if let fileHandle = FileHandle(forWritingAtPath: fileURL.path) {
             defer {
                 fileHandle.closeFile()
@@ -239,7 +241,6 @@ class TraceReader {
         return true
     }
     
-    
     enum ComponentType : String {
         case responseHeader = "Response-Header"
         case responseBody = "Response-Body"
@@ -249,8 +250,6 @@ class TraceReader {
         var type: ComponentType
         var data: Data
     }
-    
-    
 
     private func consumeTrace(fileHandle: FileHandle) -> Trace? {
     
@@ -345,9 +344,7 @@ class TraceReader {
             return nil
         }
     }
-    
-    
-    
+
     private func testForEmptyLine(fileHandle: FileHandle) -> Bool {
         return testFor("", fileHandle: fileHandle)
     }
@@ -384,7 +381,6 @@ class TraceReader {
         return true
     }
     
-    
     private func consumeData(forToken token: String, fileHandle: FileHandle) -> Data? {
         let startingOffset = fileHandle.offsetInFile
         
@@ -405,12 +401,11 @@ class TraceReader {
         return data
     }
     
-    
 }
 
 extension FileHandle {
     
-    func consumeEmptyLines() -> Int {
+    fileprivate func consumeEmptyLines() -> Int {
         var offset = offsetInFile
         var data = self.readLine(withDelimiter: "\n")
         var counter = 0
@@ -460,6 +455,3 @@ extension String {
         return start..<end
     }
 }
-
-
-

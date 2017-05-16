@@ -1,3 +1,11 @@
+//
+//  Succulent.swift
+//  Succulent
+//
+//  Created by Karl von Randow on 15/01/17.
+//  Copyright © 2017 Cactuslab. All rights reserved.
+//
+
 import Embassy
 import Foundation
 
@@ -9,7 +17,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     public var recordURL: URL?
     public var ignoreParameters: Set<String>?
     
-    public let router = Matching()
+    public let router = Router()
     
     private var loop: EventLoop!
     private var server: DefaultHTTPServer!
@@ -401,7 +409,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             return queryString
         }
         
-        let params = Matcher.parse(queryString: queryString)
+        let params = Route.parse(queryString: queryString)
         var result = ""
         params?.forEach({ (key, value) in
             if !ignoreParameters.contains(key) {
