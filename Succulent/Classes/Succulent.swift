@@ -13,7 +13,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     
     public var port: Int?
     public var version = 0
-    public var passThroughBaseUrl: URL?
+    public var baseUrl: URL?
     public var recordUrl: URL? {
         didSet {
             if let recordUrl = recordUrl {
@@ -54,20 +54,20 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         createDefaultRouter()
     }
 
-    public convenience init(traceUrl: URL, passThroughBaseUrl: URL? = nil) {
+    public convenience init(traceUrl: URL, baseUrl: URL? = nil) {
         self.init()
         
-        self.passThroughBaseUrl = passThroughBaseUrl
+        self.baseUrl = baseUrl
         addTrace(url: traceUrl)
     }
     
-    public convenience init(recordUrl: URL, passThroughBaseUrl: URL) {
+    public convenience init(recordUrl: URL, baseUrl: URL) {
         self.init()
         
         defer {
             /* Defer so that the didSet runs on recordUrl */
             self.recordUrl = recordUrl
-            self.passThroughBaseUrl = passThroughBaseUrl
+            self.baseUrl = baseUrl
         }
     }
     
@@ -102,8 +102,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 
                 res.data = trace.responseBody
                 resultBlock(.response(res))
-            } else if let passThroughBaseUrl = self.passThroughBaseUrl {
-                let url = URL(string: ".\(req.file)", relativeTo: passThroughBaseUrl)!
+            } else if let baseUrl = self.baseUrl {
+                let url = URL(string: ".\(req.file)", relativeTo: baseUrl)!
                 
                 print("Pass-through URL: \(url.absoluteURL)")
                 var urlRequest = URLRequest(url: url)
@@ -356,7 +356,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         if let query = request.queryString {
             path.append("?\(sanitize(queryString: query))")
         }
-        let traceMeta = TraceMeta(method: request.method, protocolScheme: self.passThroughBaseUrl?.scheme, host: self.passThroughBaseUrl?.host, file: path, version: "HTTP/1.1")
+        let traceMeta = TraceMeta(method: request.method, protocolScheme: self.baseUrl?.scheme, host: self.baseUrl?.host, file: path, version: "HTTP/1.1")
 
         let tracer = TraceWriter(fileURL: traceUrl)
         let token = NSUUID().uuidString
