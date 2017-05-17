@@ -15,7 +15,7 @@ class Tests: XCTestCase {
         let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
         
         if let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent") {
-            suc = Succulent(traceURL: traceURL)
+            suc = Succulent(traceUrl: traceURL)
         } else {
             suc = Succulent()
         }
@@ -133,7 +133,7 @@ class Tests: XCTestCase {
     }
     
     func testPassThrough() {
-        suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
+        suc.passThroughBaseUrl = URL(string: "http://www.cactuslab.com/")
         
         GET("index.html") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!

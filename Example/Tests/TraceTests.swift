@@ -23,7 +23,7 @@ class TraceTests: XCTestCase {
         
         recordingURL = URL(fileURLWithPath: getDocumentsDirectory()).appendingPathComponent("\(testName).trace")
         
-        suc = Succulent(recordingURL: recordingURL)
+        suc = Succulent(recordUrl: recordingURL, passThroughBaseUrl: recordingURL)
         
         suc.start()
         
@@ -45,7 +45,7 @@ class TraceTests: XCTestCase {
     }
     
     func testRecordingSimple() {
-        suc.passThroughBaseURL = URL(string: "http://www.cactuslab.com/")
+        suc.passThroughBaseUrl = URL(string: "http://www.cactuslab.com/")
         
         // we've bundled in a trace file for this just to try to trip it up
         GET("index.html") { (data, response, error) in
@@ -57,14 +57,14 @@ class TraceTests: XCTestCase {
     }
     
     func testRecordingResult() {
-        suc.passThroughBaseURL = URL(string: "http://cactuslab.com/")
+        suc.passThroughBaseUrl = URL(string: "http://cactuslab.com/")
         GET("/") { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             
             let traceReader = TraceReader(fileURL: self.recordingURL)
             let results = traceReader.readFile()!
             
-            XCTAssert(results.count == 1)
+            XCTAssertEqual(results.count, 1)
             
             XCTAssert(results[0].responseBody == data)
         }
