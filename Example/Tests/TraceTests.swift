@@ -19,14 +19,11 @@ class TraceTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let bundle = Bundle(for: type(of: self))
         let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
-        
-        let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent")
         
         recordingURL = URL(fileURLWithPath: getDocumentsDirectory()).appendingPathComponent("\(testName).trace")
         
-        suc = Succulent(traceURL: traceURL, recordingURL: recordingURL, recordingMode: true)
+        suc = Succulent(recordingURL: recordingURL)
         
         suc.start()
         
