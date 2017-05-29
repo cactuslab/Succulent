@@ -53,7 +53,6 @@ class TraceTests: XCTestCase, SucculentTest {
             let string = String(data: data!, encoding: .utf8)!
             XCTAssertTrue(string.endIndex > string.startIndex)
         }
-        
     }
     
     func testRecordingResult() {

@@ -21,6 +21,6 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>TraceRecordPath</key>
-	<string>$(PROJECT_DIR)/Succulent/</string>
+	<string>$(PROJECT_DIR)/Traces/</string>
 </dict>
 </plist>
