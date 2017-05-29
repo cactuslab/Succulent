@@ -52,18 +52,29 @@ private var traceUrl: URL? {
 
 /// The URL to the trace file for the current test when recording
 private var recordUrl: URL {
-	return URL(fileURLWithPath: "\(kProjectDir)/Succulent/\(self.traceName).trace")
+    let bundle = Bundle(for: type(of: self))
+    let recordPath = bundle.infoDictionary!["TraceRecordPath"] as! String
+    return URL(fileURLWithPath: "\(recordPath)/\(self.traceName).trace")
 }
 ```
 
-Then in your app, look for the `"succulentBaseURL"` environment variable, and use that URL in place
+Note that `recordUrl` uses a string that must be setup in your `Info.plist` file:
+
+```xml
+	<key>TraceRecordPath</key>
+	<string>$(PROJECT_DIR)/Succulent/</string>
+```
+
+With this setting, Succulent records trace files into your project source tree. Therefore your Succulent traces are committed to source control with your test files, and when you build and run your tests the traces are copied into the test application.
+
+Finally, in your app, look for the `"succulentBaseURL"` environment variable, and use that URL in place
 of your live API URL:
 
 ```swift
 let apiBaseUrl = ProcessInfo.processInfo.environment["succulentBaseURL"]
 ```
 
-There is an example project in the `Example` directory. To run the example project, run `pod install` from within the Example directory, then open the Xcode workspace and run the tests.
+There is an example project in the `Example` directory. To run the example project, run `pod install` from within the Example directory, then open the Xcode workspace and run the tests. The example project demonstrates some of the use of Succulent in a stand-alone setting rather than as it is intended, which is for UI automation testing of another app.
 
 ## Requirements
 

@@ -9,33 +9,35 @@
 @testable import Succulent
 import XCTest
 
-class TraceTests: XCTestCase {
+class TraceTests: XCTestCase, SucculentTest {
     
     private var suc: Succulent!
-    private var session: URLSession!
-    private var baseURL: URL!
+    var session: URLSession!
+    var baseURL: URL!
     private var recordingURL: URL!
     
     override func setUp() {
         super.setUp()
         
-        let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
+        recordingURL = self.recordUrl
         
-        recordingURL = URL(fileURLWithPath: getDocumentsDirectory()).appendingPathComponent("\(testName).trace")
-        
-        suc = Succulent(recordUrl: recordingURL, passThroughBaseUrl: recordingURL)
-        
+        suc = Succulent(recordUrl: recordingURL, baseUrl: URL(string: "http://cactuslab.com/")!)
         suc.start()
         
         baseURL = URL(string: "http://localhost:\(suc.actualPort)")
-        
         session = URLSession(configuration: .default)
     }
     
-    fileprivate func getDocumentsDirectory() -> String {
-        let filePath = Bundle(for: type(of:self)).infoDictionary!["TraceOutputDirectory"] as! String
-        let _ = try? FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true, attributes: nil)
-        return filePath
+    /// The name of the trace file for the current test
+    private var traceName: String {
+        return self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
+    }
+    
+    /// The URL to the trace file for the current test when recording
+    private var recordUrl: URL {
+        let bundle = Bundle(for: type(of: self))
+        let recordPath = bundle.infoDictionary!["TraceRecordPath"] as! String
+        return URL(fileURLWithPath: "\(recordPath)/\(self.traceName).trace")
     }
     
     override func tearDown() {
@@ -45,9 +47,7 @@ class TraceTests: XCTestCase {
     }
     
     func testRecordingSimple() {
-        suc.passThroughBaseUrl = URL(string: "http://www.cactuslab.com/")
-        
-        // we've bundled in a trace file for this just to try to trip it up
+        // NB: we've bundled a trace file for this test to demonstrate that existing traces are not used in recording mode
         GET("index.html") { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 404)
             let string = String(data: data!, encoding: .utf8)!
@@ -57,7 +57,6 @@ class TraceTests: XCTestCase {
     }
     
     func testRecordingResult() {
-        suc.passThroughBaseUrl = URL(string: "http://cactuslab.com/")
         GET("/") { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             
@@ -67,58 +66,6 @@ class TraceTests: XCTestCase {
             XCTAssertEqual(results.count, 1)
             
             XCTAssert(results[0].responseBody == data)
-        }
-    }
-    
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct results.
-//        
-//        let fileURL = Bundle(for: TraceTests.self).url(forResource: "trace", withExtension: "trace")!
-//        
-//        let traceReader = TraceReader(fileURL: fileURL)
-//        if let results = traceReader.readFile() {
-//            print("results")
-//        }
-//        
-//        print("file: \(fileURL)")
-//        
-//    }
-    
-    func GET(_ path: String, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
-        let url = URL(string: path, relativeTo: baseURL)!
-        let expectation = self.expectation(description: "Loaded URL")
-        
-        let dataTask = session.dataTask(with: url) { (data, response, error) in
-            completion(data, response as? HTTPURLResponse, error)
-            expectation.fulfill()
-        }
-        dataTask.resume()
-        
-        self.waitForExpectations(timeout: 10) { (error) in
-            if let error = error {
-                completion(nil, nil, error)
-            }
-        }
-    }
-    
-    func POST(_ path: String, body: Data, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
-        let url = URL(string: path, relativeTo: baseURL)!
-        let expectation = self.expectation(description: "Loaded URL")
-        
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        
-        let dataTask = session.uploadTask(with: req, from: body) { (data, response, error) in
-            completion(data, response as? HTTPURLResponse, error)
-            expectation.fulfill()
-        }
-        dataTask.resume()
-        
-        self.waitForExpectations(timeout: 10) { (error) in
-            if let error = error {
-                completion(nil, nil, error)
-            }
         }
     }
     

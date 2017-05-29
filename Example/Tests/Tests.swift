@@ -2,30 +2,37 @@ import UIKit
 import XCTest
 import Succulent
 
-class Tests: XCTestCase {
+class Tests: XCTestCase, SucculentTest {
     
     private var suc: Succulent!
-    private var session: URLSession!
-    private var baseURL: URL!
+    var session: URLSession!
+    var baseURL: URL!
     
     override func setUp() {
         super.setUp()
         
-        let bundle = Bundle(for: type(of: self))
-        let testName = self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
-        
-        if let traceURL = bundle.url(forResource: testName, withExtension: "trace", subdirectory: "Succulent") {
+        if let traceURL = self.traceUrl {
             suc = Succulent(traceUrl: traceURL)
         } else {
             suc = Succulent()
         }
-        suc.ignoreParameters = ["ignoreMe"]
         
         suc.start()
         
         baseURL = URL(string: "http://localhost:\(suc.actualPort)")
         
         session = URLSession(configuration: .default)
+    }
+    
+    /// The name of the trace file for the current test
+    private var traceName: String {
+        return self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
+    }
+    
+    /// The URL to the trace file for the current test when running tests
+    private var traceUrl: URL? {
+        let bundle = Bundle(for: type(of: self))
+        return bundle.url(forResource: self.traceName, withExtension: "trace", subdirectory: "Succulent")
     }
     
     override func tearDown() {
@@ -63,6 +70,7 @@ class Tests: XCTestCase {
     }
     
     func testIgnoredParameters() {
+        suc.ignoreParameters = ["ignoreMe"]
         
         GET("query.txt?username=test&ignoreMe=1209") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
@@ -72,7 +80,6 @@ class Tests: XCTestCase {
         GET("query.txt?username=test&dontIgnoreMe=1209") { (data, response, error) in
             XCTAssert(response?.statusCode == 404)
         }
-        
     }
     
     
@@ -133,7 +140,7 @@ class Tests: XCTestCase {
     }
     
     func testPassThrough() {
-        suc.passThroughBaseUrl = URL(string: "http://www.cactuslab.com/")
+        suc.baseUrl = URL(string: "http://www.cactuslab.com/")
         
         GET("index.html") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
@@ -163,43 +170,6 @@ class Tests: XCTestCase {
         XCTAssertEqual(values[0], "SC_ANALYTICS_GLOBAL_COOKIE=73051b1ef8cb4754a229d527e05b35e6; expires=Mon, 25-Jan-2027 02:39:32 GMT; path=/; HttpOnly")
         XCTAssertEqual(values[1], "SC_ANALYTICS_SESSION_COOKIE=20DEC82E7861452F884C0E562C7663A9|1|00zaww0gms2fk3gkv03cyfht; path=/; HttpOnly")
         XCTAssertEqual(values[2], ".ASPXAUTH=BA9DF32B7E5964D3B99F90FFB6DC39DA4A245F5FF439964D744E4412CB07D623021192D160B3C922C256A5545B17F4D19F698561E01AA870CD01028539A8CF3ADBB56A15D80239BD66D7BC4413E4C085C5AF64B425823404BAB81DC76166CBC8216D3F437CFAFC907D96CD42D99D77E846DA9FDE; expires=Wed, 25-Jan-2017 03:09:32 GMT; path=/; HttpOnly")
-    }
-    
-    func GET(_ path: String, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
-        let url = URL(string: path, relativeTo: baseURL)!
-        let expectation = self.expectation(description: "Loaded URL")
-        
-        let dataTask = session.dataTask(with: url) { (data, response, error) in
-            completion(data, response as? HTTPURLResponse, error)
-            expectation.fulfill()
-        }
-        dataTask.resume()
-        
-        self.waitForExpectations(timeout: 10) { (error) in
-            if let error = error {
-                completion(nil, nil, error)
-            }
-        }
-    }
-    
-    func POST(_ path: String, body: Data, completion: @escaping (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> ()) {
-        let url = URL(string: path, relativeTo: baseURL)!
-        let expectation = self.expectation(description: "Loaded URL")
-        
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        
-        let dataTask = session.uploadTask(with: req, from: body) { (data, response, error) in
-            completion(data, response as? HTTPURLResponse, error)
-            expectation.fulfill()
-        }
-        dataTask.resume()
-        
-        self.waitForExpectations(timeout: 10) { (error) in
-            if let error = error {
-                completion(nil, nil, error)
-            }
-        }
     }
     
 }

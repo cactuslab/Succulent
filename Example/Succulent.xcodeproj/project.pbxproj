@@ -16,6 +16,7 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		983A99211E70FCE600C0FEF9 /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983A99201E70FCE600C0FEF9 /* TraceTests.swift */; };
 		B827BD9B1E2C739F003256F2 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B827BD9A1E2C739F003256F2 /* RouterTests.swift */; };
+		B833B1E31EDBBC0800758611 /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B833B1E21EDBBC0800758611 /* TestSupport.swift */; };
 		B8F58B081E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
 		B8F58B091E38633F00F6F087 /* Succulent in Resources */ = {isa = PBXBuildFile; fileRef = B8F58B071E38633F00F6F087 /* Succulent */; };
 		DEF073E09BE775740BAF0EA8 /* Pods_Succulent_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0BD5D5480986E7F56D19900 /* Pods_Succulent_Example.framework */; };
@@ -50,6 +51,7 @@
 		983A99201E70FCE600C0FEF9 /* TraceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TraceTests.swift; sourceTree = "<group>"; };
 		A7D321DBFDE0C96D3D3CDE84 /* Succulent.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Succulent.podspec; path = ../Succulent.podspec; sourceTree = "<group>"; };
 		B827BD9A1E2C739F003256F2 /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
+		B833B1E21EDBBC0800758611 /* TestSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSupport.swift; sourceTree = "<group>"; };
 		B8F58B071E38633F00F6F087 /* Succulent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Succulent; sourceTree = "<group>"; };
 		D0BD5D5480986E7F56D19900 /* Pods_Succulent_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Succulent_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D80E373A86FDD64DA9B6CDDE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				607FACEB1AFB9204008FA782 /* Tests.swift */,
 				B827BD9A1E2C739F003256F2 /* RouterTests.swift */,
 				983A99201E70FCE600C0FEF9 /* TraceTests.swift */,
+				B833B1E21EDBBC0800758611 /* TestSupport.swift */,
 				B8F58B071E38633F00F6F087 /* Succulent */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
@@ -225,7 +228,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0830;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -383,6 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B827BD9B1E2C739F003256F2 /* RouterTests.swift in Sources */,
+				B833B1E31EDBBC0800758611 /* TestSupport.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
 				983A99211E70FCE600C0FEF9 /* TraceTests.swift in Sources */,
 			);
@@ -510,11 +514,13 @@
 			baseConfigurationReference = 88FDAF260577A4CFB4E2B266 /* Pods-Succulent_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Succulent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -524,6 +530,7 @@
 			baseConfigurationReference = DDAA47C3AE35A85B74CB7C12 /* Pods-Succulent_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Succulent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -539,10 +546,6 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;

@@ -9,6 +9,7 @@
 import XCTest
 import Succulent
 
+/// Test the Router functionality
 class RouterTests: XCTestCase {
     
     var mock: Router!
