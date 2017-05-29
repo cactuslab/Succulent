@@ -4,9 +4,66 @@
 [![License](https://img.shields.io/cocoapods/l/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
 [![Platform](https://img.shields.io/cocoapods/p/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
 
+Succulent is a Swift library to provide API recording and replay for automated testing on iOS.
+
+Succulent creates a local web server that you point your app to, instead of the live API. In recording
+mode, Succulent receives the API request from the app and then makes the same request to the live API,
+then records the request and response for replay.
+
+Succulent can also handle mutating requests, like POST, PUT and DELETE, as after a mutating request
+it will store a new version of subsequent responses, so that during playback it can correctly simulate
+the change.
+
+## Why?
+
+Succulent solves the problem of getting repeatable API results to support stable automated testing.
+
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+Setup Succulent in your XCTest's `setUp` method:
+
+```swift
+override func setUp() {
+	super.setUp()
+
+	if let traceUrl = self.traceUrl {
+		// Replay using an existing trace file
+		succulent = Succulent(traceUrl: traceUrl)
+	} else {
+		// Record to a new trace file
+		succulent = Succulent(recordUrl: self.recordUrl, baseUrl: liveApiBaseUrl)
+	}
+
+	succulent.start()
+
+	launchEnvironment["succulentBaseURL"] = "http://localhost:\(succulent.actualPort)/"
+}
+
+/// The name of the trace file for the current test
+private var traceName: String {
+	return self.description.trimmingCharacters(in: CharacterSet(charactersIn: "-[] ")).replacingOccurrences(of: " ", with: "_")
+}
+
+/// The URL to the trace file for the current test when running tests
+private var traceUrl: URL? {
+	let bundle = Bundle(for: type(of: self))
+	return bundle.url(forResource: self.traceName, withExtension: "trace", subdirectory: "Succulent")
+}
+
+/// The URL to the trace file for the current test when recording
+private var recordUrl: URL {
+	return URL(fileURLWithPath: "\(kProjectDir)/Succulent/\(self.traceName).trace")
+}
+```
+
+Then in your app, look for the `"succulentBaseURL"` environment variable, and use that URL in place
+of your live API URL:
+
+```swift
+let apiBaseUrl = ProcessInfo.processInfo.environment["succulentBaseURL"]
+```
+
+There is an example project in the `Example` directory. To run the example project, run `pod install` from within the Example directory, then open the Xcode workspace and run the tests.
 
 ## Requirements
 
