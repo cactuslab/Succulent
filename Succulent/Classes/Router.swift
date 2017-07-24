@@ -391,7 +391,7 @@ public struct Request {
         }
         
         for (key, value) in headers {
-            if key.lowercased() == needle.lowercased() {
+            if key.lowercased().replacingOccurrences(of: "-", with: "_") == needle.lowercased().replacingOccurrences(of: "-", with: "_") {
                 return value
             }
         }

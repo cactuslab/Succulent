@@ -122,6 +122,23 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    func testPOSTEmptyBody() {
+        XCTAssertEqual(0, suc.version)
+        
+        POST("testing.txt", body: Data()) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
+        }
+        
+        XCTAssertEqual(0, suc.version)
+        
+        GET("testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "Hello!")
+        }
+        
+        XCTAssertEqual(1, suc.version)
+    }
+    
     func testPOST() {
         XCTAssertEqual(0, suc.version)
         
