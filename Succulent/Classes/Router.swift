@@ -338,7 +338,7 @@ public enum RequestMethod: String {
     case DELETE
 }
 
-fileprivate let DefaultHTTPVersion = "HTTP/1.1"
+public let DefaultHTTPVersion = "HTTP/1.1"
 
 /// Model for an HTTP request
 public struct Request {

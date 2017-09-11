@@ -7,22 +7,22 @@ Protocol-Version: HTTP/1.1
 Protocol: http
 Host: cactuslab.com
 File: /
-Response-Header:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
+Response-Header:<<--EOF-7B854B8E-5EA3-427F-A93C-BBEBE771BEDA-
 HTTP/1.1 200
 Content-Type: text/html;charset=utf-8
 Content-Language: en-US
+Date: Mon, 11 Sep 2017 01:24:27 GMT
+Set-Cookie: JSESSIONID=7798BCC560E76EC0516A683C85AD3538; Path=/; HttpOnly
 Content-Encoding: gzip
-Set-Cookie: com.xk72.webparts.csrf=koORZAcfhZeN8zFA; Path=/, JSESSIONID=9E8C8F11244D40A403A338FA94468A03; Path=/; HttpOnly
-Content-Length: 5542
+Content-Length: 5553
 Keep-Alive: timeout=5, max=100
-Vary: Accept-Encoding
-Proxy-Connection: Keep-alive
+Connection: Keep-Alive
 Server: Apache
-Date: Mon, 29 May 2017 02:27:04 GMT
+Vary: Accept-Encoding
 X-UA-Compatible: IE=Edge
 
---EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
-Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
+--EOF-7B854B8E-5EA3-427F-A93C-BBEBE771BEDA-
+Response-Body:<<--EOF-7B854B8E-5EA3-427F-A93C-BBEBE771BEDA-
 
 
 
@@ -72,7 +72,7 @@ Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
 	<link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.11d28313.png">
 	<link rel="manifest" href="/static/img/favicon/manifest.8bf33c43.json">
 
-	<script type="text/javascript" src="/static/js/main.min.d0b7ad74.js"></script>
+	<script type="text/javascript" src="/static/js/main.min.412ee8df.js"></script>
 </head>
 
 
@@ -185,6 +185,154 @@ Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
 						
 						
 
+						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#8899AA" data-text-color="light" >
+							<div class="constraint js--constraint">
+
+								<header class="header js--header -has-no-best-award">
+									<div class="measure js--measure">
+										<h1 class="name js--name">Conversations with Teen Mums</h1>
+
+										<div class="rich-text -smaller description">
+											
+											
+													<p><span>We were honoured to work with Juliette Veber on her interactive documentary project, presenting interviews, films and photographs of South Auckland teen mums.</span></p>
+												
+										</div>
+
+										<a class="ctabutton" href="/work/conversations-with-teen-mums/"><span class="label">View Project</span></a>
+
+										
+									</div>
+								</header>
+
+								
+								
+
+
+								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
+									
+
+									
+										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
+											<div class="bezel js--bezel">
+												<div class="ratio js--ratio">
+													<img data-aspect-ratio="1.23375" src="/assets/resized/sm/upload/b3/yw/77/0t/cwtm-home-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/b3/yw/77/0t/cwtm-home-crop-0-1600-0-1972-crop.jpg 2x" />
+
+												</div>
+											</div>
+										</figure>
+
+										
+									
+
+									
+
+									
+										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
+											<div class="bezel js--bezel">
+												<div class="ratio js--ratio">
+													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/au/gk/8i/8t/IMG_8178-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/au/gk/8i/8t/IMG_8178-0-700-0-1244-crop.jpg 2x" />
+
+												</div>
+											</div>
+										</div>
+
+										
+									
+
+									
+								</div>
+
+								
+
+							</div>
+
+
+						</article>
+					
+						
+						
+								
+							
+						
+						
+						
+						
+
+						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#B96A2A" data-text-color="light" >
+							<div class="constraint js--constraint">
+
+								<header class="header js--header -has-no-best-award">
+									<div class="measure js--measure">
+										<h1 class="name js--name">Pacific Gardens</h1>
+
+										<div class="rich-text -smaller description">
+											
+											
+													<p><span>We worked with&nbsp;</span>Alt Group<span>&nbsp;to deliver this mobile-friendly brochure site for a new Auckland housing development.</span></p>
+												
+										</div>
+
+										<a class="ctabutton" href="/work/pacific-gardens/"><span class="label">View Project</span></a>
+
+										
+									</div>
+								</header>
+
+								
+								
+
+
+								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
+									
+
+									
+										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
+											<div class="bezel js--bezel">
+												<div class="ratio js--ratio">
+													<img data-aspect-ratio="1.3125" src="/assets/resized/sm/upload/nm/9c/9n/3f/pg-home-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/nm/9c/9n/3f/pg-home-crop-0-1600-0-2100-crop.jpg 2x" />
+
+												</div>
+											</div>
+										</figure>
+
+										
+									
+
+									
+
+									
+										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
+											<div class="bezel js--bezel">
+												<div class="ratio js--ratio">
+													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/5g/lu/70/n1/IMG_8092-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/5g/lu/70/n1/IMG_8092-0-700-0-1244-crop.jpg 2x" />
+
+												</div>
+											</div>
+										</div>
+
+										
+									
+
+									
+								</div>
+
+								
+
+							</div>
+
+
+						</article>
+					
+						
+						
+								
+							
+						
+						
+						
+						
+
 						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#239A39" data-text-color="light" >
 							<div class="constraint js--constraint">
 
@@ -195,7 +343,7 @@ Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
 										<div class="rich-text -smaller description">
 											
 											
-													<p><span>We worked with two of the Institute&rsquo;s long-time partners to</span><span>&nbsp;deliver this evolution of its website, placing more focus on our design community.</span></p>
+													<p><span>We worked with two of the Institute&rsquo;s long-time partners to</span><span>&nbsp;deliver this evolution of its site, placing more focus on our design community.</span></p>
 												
 										</div>
 
@@ -232,154 +380,6 @@ Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
 													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-700-0-1244-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</div>
-
-										
-									
-
-									
-								</div>
-
-								
-
-							</div>
-
-
-						</article>
-					
-						
-						
-								
-							
-						
-						
-						
-						
-
-						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#445555" data-text-color="light" >
-							<div class="constraint js--constraint">
-
-								<header class="header js--header -has-no-best-award">
-									<div class="measure js--measure">
-										<h1 class="name js--name">Jane Goodall Institute</h1>
-
-										<div class="rich-text -smaller description">
-											
-											
-													<p><span>We worked with the Institute&rsquo;s New Zealand chapter to amalgamate information from around the globe and focus it for a local audience.</span></p>
-												
-										</div>
-
-										<a class="ctabutton" href="/work/jane-goodall-institute/"><span class="label">View Project</span></a>
-
-										
-									</div>
-								</header>
-
-								
-								
-
-
-								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
-									
-
-									
-										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.96375" src="/assets/resized/sm/upload/eh/t3/6u/fb/jgi-africa-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/eh/t3/6u/fb/jgi-africa-crop-0-1600-0-3142-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</figure>
-
-										
-									
-
-									
-
-									
-										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(17,17,17)">
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/ka/i8/o0/os/IMG_7167-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/ka/i8/o0/os/IMG_7167-0-700-0-1244-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</div>
-
-										
-									
-
-									
-								</div>
-
-								
-
-							</div>
-
-
-						</article>
-					
-						
-						
-								
-							
-						
-						
-						
-						
-
-						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#337755" data-text-color="light" >
-							<div class="constraint js--constraint">
-
-								<header class="header js--header -has-no-best-award">
-									<div class="measure js--measure">
-										<h1 class="name js--name">First Light Farms</h1>
-
-										<div class="rich-text -smaller description">
-											
-											
-													<p><span>Big layouts, bold typography and delicious food photography bring First Light&rsquo;s new brand and story to life on the web.</span></p>
-												
-										</div>
-
-										<a class="ctabutton" href="/work/first-light-farms/"><span class="label">View Project</span></a>
-
-										
-									</div>
-								</header>
-
-								
-								
-
-
-								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
-									
-
-									
-										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.2825" src="/assets/resized/sm/upload/k8/j8/11/tr/flf-recipes-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/k8/j8/11/tr/flf-recipes-crop-0-1600-0-2050-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</figure>
-
-										
-									
-
-									
-
-									
-										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/54/nm/r2/7q/IMG_7155-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/54/nm/r2/7q/IMG_7155-0-700-0-1244-crop.jpg 2x" />
 
 												</div>
 											</div>
@@ -735,4 +735,4 @@ Response-Body:<<--EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
 </html>
 
 
---EOF-72E9998D-0910-44F4-90A4-1F4EA52E7280-
+--EOF-7B854B8E-5EA3-427F-A93C-BBEBE771BEDA-

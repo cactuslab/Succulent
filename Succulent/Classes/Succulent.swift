@@ -178,8 +178,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             for trace in orderedTraces {
                 if let file = trace.meta.file, let method = trace.meta.method {
                     let matches = queryPathSplitterRegex.matches(in: file, options: [], range: file.nsrange)
-                    let path = file.substring(with: matches[0].rangeAt(1))!
-                    let query = file.substring(with: matches[0].rangeAt(2))
+                    let path = file.substring(with: matches[0].range(at: 1))!
+                    let query = file.substring(with: matches[0].range(at: 2))
                     
                     if method != "GET" && method != "HEAD" {
                         lastWasMutation = true
@@ -228,8 +228,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         
         for line in lines.dropFirst() {
             if let r = line.range(of: ": ") {
-                let key = line.substring(to: r.lowerBound)
-                let value = line.substring(from: r.upperBound)
+                let key = String(line[..<r.lowerBound])//line.substring(to: r.lowerBound)
+                let value = String(line[r.upperBound...])//line.substring(from: r.upperBound)
                 
                 if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                     continue
@@ -255,7 +255,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         var headers = [(String, String)]()
         for pair in environ {
             if pair.key.hasPrefix("HTTP_"), let value = pair.value as? String {
-                let key = pair.key.substring(from: pair.key.index(pair.key.startIndex, offsetBy: 5))
+                let key = String(pair.key[pair.key.index(pair.key.startIndex, offsetBy: 5)...])
+                //pair.key.substring(from: pair.key.index(pair.key.startIndex, offsetBy: 5))
                 headers.append((key, value))
             }
         }
@@ -448,7 +449,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private func contentType(for path: String) -> String {
         var path = path
         if let r = path.range(of: "?", options: .backwards) {
-            path = path.substring(to: r.lowerBound)
+            path = String(path[..<r.lowerBound])
         }
         
         let ext = (path as NSString).pathExtension.lowercased()

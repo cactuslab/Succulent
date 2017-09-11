@@ -2,11 +2,14 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'Succulent_Example' do
+  pod 'Embassy', :git => 'https://github.com/reTXT/Embassy.git', :branch => 'swift4'
   pod 'Succulent', :path => '../'
+
+
 
   target 'Succulent_Tests' do
     inherit! :search_paths
-
-    pod 'Succulent', :path => '../'    
+    pod 'Embassy', :git => 'https://github.com/reTXT/Embassy.git', :branch => 'swift4'
+    pod 'Succulent', :path => '../'
   end
 end

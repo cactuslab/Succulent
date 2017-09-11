@@ -268,8 +268,8 @@ class TraceReader {
                     
                     let matches = metaRegex.matches(in: line, options: [], range: line.nsrange)
                     matches.forEach({ (match) in
-                        let key = line.substring(with: match.rangeAt(1))!
-                        let value = line.substring(with: match.rangeAt(2))!
+                        let key = line.substring(with: match.range(at: 1))!
+                        let value = line.substring(with: match.range(at: 2))!
                         
                         meta[key] = value
                     })
@@ -323,8 +323,8 @@ class TraceReader {
     
         let matches = tokenStartRegex.matches(in: line, options: [], range: line.nsrange)
         if matches.count > 0 {
-            let contentType = line.substring(with: matches[0].rangeAt(1))!
-            let token = line.substring(with: matches[0].rangeAt(2))!
+            let contentType = line.substring(with: matches[0].range(at: 1))!
+            let token = line.substring(with: matches[0].range(at: 2))!
             
             guard let data = consumeData(forToken: token, fileHandle: fileHandle) else {
                 //Hit the end of the file
@@ -434,19 +434,19 @@ extension String {
     /// Returns a substring with the given `NSRange`,
     /// or `nil` if the range can't be converted.
     func substring(with nsrange: NSRange) -> String? {
-        guard let range = nsrange.toRange()
+        guard let range = Range(nsrange)
             else { return nil }
-        let start = UTF16Index(range.lowerBound)
-        let end = UTF16Index(range.upperBound)
+        let start = UTF16Index(encodedOffset: range.lowerBound)
+        let end = UTF16Index(encodedOffset: range.upperBound)
         return String(utf16[start..<end])
     }
     
     /// Returns a range equivalent to the given `NSRange`,
     /// or `nil` if the range can't be converted.
     func range(from nsrange: NSRange) -> Range<Index>? {
-        guard let range = nsrange.toRange() else { return nil }
-        let utf16Start = UTF16Index(range.lowerBound)
-        let utf16End = UTF16Index(range.upperBound)
+        guard let range = Range(nsrange) else { return nil }
+        let utf16Start = UTF16Index(encodedOffset: range.lowerBound)
+        let utf16End = UTF16Index(encodedOffset: range.upperBound)
         
         guard let start = Index(utf16Start, within: self),
             let end = Index(utf16End, within: self)
