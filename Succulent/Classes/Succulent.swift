@@ -228,8 +228,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         
         for line in lines.dropFirst() {
             if let r = line.range(of: ": ") {
-                let key = String(line[..<r.lowerBound])//line.substring(to: r.lowerBound)
-                let value = String(line[r.upperBound...])//line.substring(from: r.upperBound)
+                let key = String(line[..<r.lowerBound])
+                let value = String(line[r.upperBound...])
                 
                 if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                     continue
