@@ -1,28 +1,19 @@
 PODS:
   - Embassy (4.0.0)
-  - Succulent (0.2.0):
+  - Succulent (0.3.1):
     - Embassy
 
 DEPENDENCIES:
-  - Embassy (from `https://github.com/reTXT/Embassy.git`, branch `swift4`)
   - Succulent (from `../`)
 
 EXTERNAL SOURCES:
-  Embassy:
-    :branch: swift4
-    :git: https://github.com/reTXT/Embassy.git
   Succulent:
     :path: ../
 
-CHECKOUT OPTIONS:
-  Embassy:
-    :commit: 68c7a6bf98ff5b4714216e0f50a94b46271e8987
-    :git: https://github.com/reTXT/Embassy.git
-
 SPEC CHECKSUMS:
-  Embassy: f9cfeeef605328b3d79d4894da042a549ab127cb
-  Succulent: c62f0af7fbbaaaf35179db652e8a551ad17ea9ee
+  Embassy: a01efce4e30c1c6a3c19e6aa27e1b75ca0e1efd3
+  Succulent: 1156e507984a92a65e09fcd1c1bbb4c900eec310
 
-PODFILE CHECKSUM: 54c15adf20885a77c845d2ef9164d8ba2bd7206d
+PODFILE CHECKSUM: 7cd1cfcf6f8a40e41dceed9093f40f64c15e361d
 
 COCOAPODS: 1.3.1
