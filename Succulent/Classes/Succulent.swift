@@ -422,7 +422,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             let sanitizedQueryString = sanitize(queryString: queryString)
             querySuffix = "?\(sanitizedQueryString)"
         } else {
-            querySuffix = ""
+            querySuffix = "?"
         }
         
         return ("/\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
