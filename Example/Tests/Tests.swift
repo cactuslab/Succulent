@@ -82,6 +82,15 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    func testIgnoreAllParameters() {
+        suc.ignoreParameters = ["ignore_me"]
+        
+        GET("query.txt?ignore_me=12345") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
+    }
+    
     
     func testQuery() {
         GET("query.txt?username=test") { (data, response, error) in
