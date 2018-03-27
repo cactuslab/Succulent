@@ -214,7 +214,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
      */
     public static func splitSetCookie(value: String) -> [String] {
         let regex = try! NSRegularExpression(pattern: "(expires\\s*=\\s*[a-z]+),", options: .caseInsensitive)
-        let apologies = regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1!!!OMG!!!")
+        let apologies = regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.count), withTemplate: "$1!!!OMG!!!")
         
         let split = apologies.components(separatedBy: ",")
         
@@ -226,7 +226,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     public static func munge(key: String, value: String) -> String {
         if key.lowercased() == "set-cookie" {
             let regex = try! NSRegularExpression(pattern: "(domain\\s*=\\s*)[^;]*(;?\\s*)", options: .caseInsensitive)
-            return regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1localhost$2")
+            return regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.count), withTemplate: "$1localhost$2")
         }
         
         return value
@@ -431,7 +431,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
         var querySuffix: String
-        if let queryString = queryString, queryString.characters.count > 0 {
+        if let queryString = queryString, queryString.count > 0 {
             let sanitizedQueryString = sanitize(queryString: queryString)
             querySuffix = "?\(sanitizedQueryString)"
         } else {
