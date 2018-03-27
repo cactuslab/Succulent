@@ -54,11 +54,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         createDefaultRouter()
     }
 
-    public convenience init(traceUrl: URL, baseUrl: URL? = nil) {
+    public convenience init(traceUrl: URL, baseUrl: URL? = nil, ignoreVersioningRequests: [String] = []) {
         self.init()
         
         self.baseUrl = baseUrl
-        addTrace(url: traceUrl)
+        addTrace(url: traceUrl, ignoreVersioningRequests: ignoreVersioningRequests)
     }
     
     public convenience init(recordUrl: URL, baseUrl: URL) {
@@ -166,9 +166,13 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     /// Load the trace file at the given URL and populate our traces ivar
-    public func addTrace(url: URL) {
+    private func addTrace(url: URL, ignoreVersioningRequests: [String]) {
         if traces == nil {
             traces = [String : Trace]()
+        }
+        
+        let ignoreExpressions: [NSRegularExpression] = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
+            return try! NSRegularExpression(pattern: expression, options: [])
         }
         
         let traceReader = TraceReader(fileURL: url)
@@ -182,7 +186,16 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     let query = file.substring(with: matches[0].range(at: 2))
                     
                     if method != "GET" && method != "HEAD" {
-                        lastWasMutation = true
+                        // Check if we are to ignore the mutation
+                        var shouldIgnore = false
+                        for expression in ignoreExpressions {
+                            if let _ = expression.firstMatch(in: file, options: [], range: file.nsrange) {
+                                shouldIgnore = true
+                            }
+                        }
+                        if !shouldIgnore {
+                            lastWasMutation = true
+                        }
                     } else if lastWasMutation {
                         version += 1
                         lastWasMutation = false
