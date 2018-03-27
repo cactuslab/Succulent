@@ -89,6 +89,11 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
             XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
         }
+        
+        GET("query2.txt?ignore_me=12345") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
     }
     
     
