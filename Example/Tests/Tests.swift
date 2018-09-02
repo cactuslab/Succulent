@@ -12,7 +12,7 @@ class Tests: XCTestCase, SucculentTest {
         super.setUp()
         
         if let traceURL = self.traceUrl {
-            suc = Succulent(traceUrl: traceURL)
+            suc = Succulent(traceUrl: traceURL, baseUrl: nil, ignoreVersioningRequests: ["^/ignore_post.txt"])
         } else {
             suc = Succulent()
         }
@@ -82,6 +82,20 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    func testIgnoreAllParameters() {
+        suc.ignoreParameters = ["ignore_me"]
+        
+        GET("query.txt?ignore_me=12345") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
+        
+        GET("query2.txt?ignore_me=12345") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(response?.allHeaderFields["Content-Type"] as? String, "text/plain")
+        }
+    }
+    
     
     func testQuery() {
         GET("query.txt?username=test") { (data, response, error) in
@@ -120,6 +134,23 @@ class Tests: XCTestCase, SucculentTest {
         GET("folder/testing.txt") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Wrong")
         }
+    }
+    
+    func testPOSTEmptyBody() {
+        XCTAssertEqual(0, suc.version)
+        
+        POST("testing.txt", body: Data()) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
+        }
+        
+        XCTAssertEqual(0, suc.version)
+        
+        GET("testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "Hello!")
+        }
+        
+        XCTAssertEqual(1, suc.version)
     }
     
     func testPOST() {
@@ -170,6 +201,32 @@ class Tests: XCTestCase, SucculentTest {
         XCTAssertEqual(values[0], "SC_ANALYTICS_GLOBAL_COOKIE=73051b1ef8cb4754a229d527e05b35e6; expires=Mon, 25-Jan-2027 02:39:32 GMT; path=/; HttpOnly")
         XCTAssertEqual(values[1], "SC_ANALYTICS_SESSION_COOKIE=20DEC82E7861452F884C0E562C7663A9|1|00zaww0gms2fk3gkv03cyfht; path=/; HttpOnly")
         XCTAssertEqual(values[2], ".ASPXAUTH=BA9DF32B7E5964D3B99F90FFB6DC39DA4A245F5FF439964D744E4412CB07D623021192D160B3C922C256A5545B17F4D19F698561E01AA870CD01028539A8CF3ADBB56A15D80239BD66D7BC4413E4C085C5AF64B425823404BAB81DC76166CBC8216D3F437CFAFC907D96CD42D99D77E846DA9FDE; expires=Wed, 25-Jan-2017 03:09:32 GMT; path=/; HttpOnly")
+    }
+    
+    func testIgnorePostVersioning() {
+        XCTAssertEqual(0, suc.version)
+        
+        GET("get2.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "get2")
+        }
+        
+        POST("ignore_post.txt", body: "Body".data(using: .utf8)!) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted1")
+        }
+        
+        XCTAssertEqual(0, suc.version)
+        
+        GET("get1.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "get1")
+        }
+        
+        POST("post2.txt", body: "Body".data(using: .utf8)!) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted2")
+        }
+        
+        XCTAssertEqual(1, suc.version)
     }
     
 }

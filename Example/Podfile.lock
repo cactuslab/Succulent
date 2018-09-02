@@ -1,19 +1,19 @@
 PODS:
-  - Embassy (3.1.0)
-  - Succulent (0.2.0):
-    - Embassy (~> 3.1.0)
+  - Embassy (4.0.0)
+  - Succulent (0.3.1):
+    - Embassy
 
 DEPENDENCIES:
   - Succulent (from `../`)
 
 EXTERNAL SOURCES:
   Succulent:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  Embassy: 00408403423e4d9d5f21057bec13b1e96e838a32
-  Succulent: ee64a0964b0a2043bf4ed8a1f9183556c447f89b
+  Embassy: a01efce4e30c1c6a3c19e6aa27e1b75ca0e1efd3
+  Succulent: 7f86fed63259e195def10417708873337374e65c
 
-PODFILE CHECKSUM: 60c9c334acbd0ab8d1c4c1f8d8dec7402b22133a
+PODFILE CHECKSUM: 7cd1cfcf6f8a40e41dceed9093f40f64c15e361d
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.4.0

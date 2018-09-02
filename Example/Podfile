@@ -1,11 +1,13 @@
+platform :ios, '9.0'
 use_frameworks!
 
 target 'Succulent_Example' do
   pod 'Succulent', :path => '../'
 
+
+
   target 'Succulent_Tests' do
     inherit! :search_paths
-
-    pod 'Succulent', :path => '../'    
+    pod 'Succulent', :path => '../'
   end
 end

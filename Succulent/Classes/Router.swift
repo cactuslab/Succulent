@@ -338,7 +338,7 @@ public enum RequestMethod: String {
     case DELETE
 }
 
-fileprivate let DefaultHTTPVersion = "HTTP/1.1"
+public let DefaultHTTPVersion = "HTTP/1.1"
 
 /// Model for an HTTP request
 public struct Request {
@@ -391,7 +391,7 @@ public struct Request {
         }
         
         for (key, value) in headers {
-            if key.lowercased() == needle.lowercased() {
+            if key.lowercased().replacingOccurrences(of: "-", with: "_") == needle.lowercased().replacingOccurrences(of: "-", with: "_") {
                 return value
             }
         }

@@ -54,11 +54,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         createDefaultRouter()
     }
 
-    public convenience init(traceUrl: URL, baseUrl: URL? = nil) {
+    public convenience init(traceUrl: URL, baseUrl: URL? = nil, ignoreVersioningRequests: [String] = []) {
         self.init()
         
         self.baseUrl = baseUrl
-        addTrace(url: traceUrl)
+        addTrace(url: traceUrl, ignoreVersioningRequests: ignoreVersioningRequests)
     }
     
     public convenience init(recordUrl: URL, baseUrl: URL) {
@@ -166,9 +166,13 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     /// Load the trace file at the given URL and populate our traces ivar
-    public func addTrace(url: URL) {
+    private func addTrace(url: URL, ignoreVersioningRequests: [String]) {
         if traces == nil {
             traces = [String : Trace]()
+        }
+        
+        let ignoreExpressions: [NSRegularExpression] = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
+            return try! NSRegularExpression(pattern: expression, options: [])
         }
         
         let traceReader = TraceReader(fileURL: url)
@@ -178,11 +182,20 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             for trace in orderedTraces {
                 if let file = trace.meta.file, let method = trace.meta.method {
                     let matches = queryPathSplitterRegex.matches(in: file, options: [], range: file.nsrange)
-                    let path = file.substring(with: matches[0].rangeAt(1))!
-                    let query = file.substring(with: matches[0].rangeAt(2))
+                    let path = file.substring(with: matches[0].range(at: 1))!
+                    let query = file.substring(with: matches[0].range(at: 2))
                     
                     if method != "GET" && method != "HEAD" {
-                        lastWasMutation = true
+                        // Check if we are to ignore the mutation
+                        var shouldIgnore = false
+                        for expression in ignoreExpressions {
+                            if let _ = expression.firstMatch(in: file, options: [], range: file.nsrange) {
+                                shouldIgnore = true
+                            }
+                        }
+                        if !shouldIgnore {
+                            lastWasMutation = true
+                        }
                     } else if lastWasMutation {
                         version += 1
                         lastWasMutation = false
@@ -201,7 +214,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
      */
     public static func splitSetCookie(value: String) -> [String] {
         let regex = try! NSRegularExpression(pattern: "(expires\\s*=\\s*[a-z]+),", options: .caseInsensitive)
-        let apologies = regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1!!!OMG!!!")
+        let apologies = regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.count), withTemplate: "$1!!!OMG!!!")
         
         let split = apologies.components(separatedBy: ",")
         
@@ -213,7 +226,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     public static func munge(key: String, value: String) -> String {
         if key.lowercased() == "set-cookie" {
             let regex = try! NSRegularExpression(pattern: "(domain\\s*=\\s*)[^;]*(;?\\s*)", options: .caseInsensitive)
-            return regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.characters.count), withTemplate: "$1localhost$2")
+            return regex.stringByReplacingMatches(in: value, options: [], range: NSMakeRange(0, value.count), withTemplate: "$1localhost$2")
         }
         
         return value
@@ -228,8 +241,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         
         for line in lines.dropFirst() {
             if let r = line.range(of: ": ") {
-                let key = line.substring(to: r.lowerBound)
-                let value = line.substring(from: r.upperBound)
+                let key = String(line[..<r.lowerBound])
+                let value = String(line[r.upperBound...])
                 
                 if Succulent.dontPassBackHeaders.contains(key.lowercased()) {
                     continue
@@ -255,7 +268,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         var headers = [(String, String)]()
         for pair in environ {
             if pair.key.hasPrefix("HTTP_"), let value = pair.value as? String {
-                let key = pair.key.substring(from: pair.key.index(pair.key.startIndex, offsetBy: 5))
+                let key = String(pair.key[pair.key.index(pair.key.startIndex, offsetBy: 5)...])
+                //pair.key.substring(from: pair.key.index(pair.key.startIndex, offsetBy: 5))
                 headers.append((key, value))
             }
         }
@@ -417,11 +431,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         let ext = replaceExtension != nil ? replaceExtension! : (path as NSString).pathExtension
         let methodSuffix = (method == "GET") ? "" : "-\(method)"
         var querySuffix: String
-        if let queryString = queryString, queryString.characters.count > 0 {
+        if let queryString = queryString, queryString.count > 0 {
             let sanitizedQueryString = sanitize(queryString: queryString)
             querySuffix = "?\(sanitizedQueryString)"
         } else {
-            querySuffix = ""
+            querySuffix = "?"
         }
         
         return ("/\(withoutExtension)-\(version)\(methodSuffix)" as NSString).appendingPathExtension(ext)!.appending(querySuffix)
@@ -448,7 +462,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private func contentType(for path: String) -> String {
         var path = path
         if let r = path.range(of: "?", options: .backwards) {
-            path = path.substring(to: r.lowerBound)
+            path = String(path[..<r.lowerBound])
         }
         
         let ext = (path as NSString).pathExtension.lowercased()
