@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Succulent'
-  s.version          = '0.3.4'
+  s.version          = '0.3.5'
   s.summary          = 'A short description of Succulent.'
 
 # This description is used to generate tags and improve search results.

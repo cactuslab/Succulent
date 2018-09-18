@@ -15,7 +15,7 @@ Method: POST
 Protocol-Version: HTTP/1.1
 Protocol: http
 Host: www.cactuslab.com
-File: /~/testing.txt
+File: /testing.txt
 Response-Body:<<--EOF-1-
 Random post to up the version number
 --EOF-1-

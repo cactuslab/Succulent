@@ -129,7 +129,28 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Great")
         }
         
-        suc.version += 1
+        POST("testing.txt", body: Data()) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "Random post to up the version number")
+        }
+        
+        GET("folder/testing.txt") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Wrong")
+        }
+    }
+    
+    func testPOSTVersions() {
+        
+        POST("ignore_post.txt", body: Data()) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "Post1")
+        }
+        
+        GET("folder/testing.txt") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Great")
+        }
+        
+        POST("testing.txt", body: Data()) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "Post2")
+        }
         
         GET("folder/testing.txt") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Wrong")
@@ -215,15 +236,20 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8), "posted1")
         }
         
-        XCTAssertEqual(0, suc.version)
-        
         GET("get1.txt") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
             XCTAssert(string == "get1")
         }
         
+        XCTAssertEqual(0, suc.version)
+        
         POST("post2.txt", body: "Body".data(using: .utf8)!) { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8), "posted2")
+        }
+        
+        GET("get1.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "get1+1")
         }
         
         XCTAssertEqual(1, suc.version)

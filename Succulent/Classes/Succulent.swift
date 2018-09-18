@@ -47,6 +47,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var traces: [String : Trace]?
     private var currentTrace = NSMutableOrderedSet()
     private var recordedKeys = Set<String>()
+    private var ignoreExpressions: [NSRegularExpression] = []
     
     public override init() {
         super.init()
@@ -58,6 +59,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         self.init()
         
         self.baseUrl = baseUrl
+        
+        ignoreExpressions = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
+            return try! NSRegularExpression(pattern: expression, options: [])
+        }
+        
         addTrace(url: traceUrl, ignoreVersioningRequests: ignoreVersioningRequests)
     }
     
@@ -75,7 +81,17 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         router.add(".*").anyParams().block { (req, resultBlock) in
             /* Increment version when we get the first GET after a mutating http method */
             if req.method != "GET" && req.method != "HEAD" {
-                self.lastWasMutation = true
+                
+                // Check if we are to ignore the mutation
+                var shouldIgnore = false
+                for expression in self.ignoreExpressions {
+                    if let _ = expression.firstMatch(in: req.path, options: [], range: req.path.nsrange) {
+                        shouldIgnore = true
+                    }
+                }
+                if !shouldIgnore {
+                    self.lastWasMutation = true
+                }
             } else if self.lastWasMutation {
                 self.version += 1
                 self.lastWasMutation = false
@@ -171,9 +187,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             traces = [String : Trace]()
         }
         
-        let ignoreExpressions: [NSRegularExpression] = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
-            return try! NSRegularExpression(pattern: expression, options: [])
-        }
+        
         
         let traceReader = TraceReader(fileURL: url)
         if let orderedTraces = traceReader.readFile() {
