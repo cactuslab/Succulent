@@ -7,22 +7,22 @@ Protocol-Version: HTTP/1.1
 Protocol: http
 Host: cactuslab.com
 File: /
-Response-Header:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
+Response-Header:<<--EOF-95BB5B3F-1873-4C07-9BA9-8A1E2B4362AE-
 HTTP/1.1 200
 Content-Type: text/html;charset=utf-8
-Content-Language: en-US
-Content-Encoding: gzip
-Set-Cookie: JSESSIONID=F714A5B7F5612551906BBFDA563DCCA5; Path=/; HttpOnly
-Content-Length: 5553
-Keep-Alive: timeout=5, max=100
-Vary: Accept-Encoding
-Proxy-Connection: Keep-alive
-Server: Apache
-Date: Fri, 22 Sep 2017 03:30:30 GMT
 X-UA-Compatible: IE=Edge
+Keep-Alive: timeout=5, max=100
+Set-Cookie: JSESSIONID=D7D041C476714273D369C6BC96298F3C; Path=/; HttpOnly
+Date: Tue, 18 Sep 2018 04:02:22 GMT
+Content-Encoding: gzip
+Content-Language: en-US
+Content-Length: 5406
+Proxy-Connection: keep-alive
+Vary: Accept-Encoding
+Server: Apache
 
---EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
-Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
+--EOF-95BB5B3F-1873-4C07-9BA9-8A1E2B4362AE-
+Response-Body:<<--EOF-95BB5B3F-1873-4C07-9BA9-8A1E2B4362AE-
 
 
 
@@ -35,7 +35,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="/static/img/favicon/ms-icon-144x144.aea04ac3.png">
+	<meta name="msapplication-TileImage" content="/static/img/favicon/ms-icon-144x144.348a6bea.png">
 	<meta name="theme-color" content="#ffffff">
 
 	<meta name="twitter:card" content="summary">
@@ -55,24 +55,24 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 
 	<title> Cactuslab, a web and app design and development studio with superpowers in Auckland, New Zealand </title>
 
-	<link rel="stylesheet" href="/static/css/main.min.4449b371.css" type="text/css" media="all">
+	<link rel="stylesheet" href="/static/css/main.min.0c089bf8.css" type="text/css" media="all">
 
-	<link rel="apple-touch-icon" sizes="57x57" href="/static/img/favicon/apple-icon-57x57.91b5e087.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="/static/img/favicon/apple-icon-60x60.bb224cb5.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/static/img/favicon/apple-icon-72x72.d8586b5b.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="/static/img/favicon/apple-icon-76x76.87e0b590.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/static/img/favicon/apple-icon-114x114.3c6c093f.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="/static/img/favicon/apple-icon-120x120.a0e8f733.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="/static/img/favicon/apple-icon-144x144.aea04ac3.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="/static/img/favicon/apple-icon-152x152.97ec83a8.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-icon-180x180.61c96f38.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="/static/img/favicon/android-icon-192x192.ba77f94b.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.11d28313.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon/favicon-96x96.40e8f9ae.png">
-	<link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.11d28313.png">
-	<link rel="manifest" href="/static/img/favicon/manifest.8bf33c43.json">
+	<link rel="apple-touch-icon" sizes="57x57" href="/static/img/favicon/apple-icon-57x57.3b759abf.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/static/img/favicon/apple-icon-60x60.d3154154.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/static/img/favicon/apple-icon-72x72.e17ffbe2.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/static/img/favicon/apple-icon-76x76.af879424.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/static/img/favicon/apple-icon-114x114.2ee25a48.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/static/img/favicon/apple-icon-120x120.b6234df4.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/static/img/favicon/apple-icon-144x144.348a6bea.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/static/img/favicon/apple-icon-152x152.4c6ae4da.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-icon-180x180.47fe67b5.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="/static/img/favicon/android-icon-192x192.5f01e877.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.1d5c25f9.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon/favicon-96x96.41e24437.png">
+	<link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.1d5c25f9.png">
+	<link rel="manifest" href="/static/img/favicon/manifest.b7c892d9.json">
 
-	<script type="text/javascript" src="/static/js/main.min.412ee8df.js"></script>
+	<script type="text/javascript" src="/static/js/main.min.4b5788a0.js"></script>
 </head>
 
 
@@ -166,8 +166,8 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 								
 								<div class="cactus js--cactus" style="width: 57.14285714285714%">
 									<div class="ratio" style="padding-top: 175.0%;">
-										<img data-aspect-ratio="1.75" src="/static/img/branding/cactus-1x.10eb0690.png"
-										srcset="/static/img/branding/cactus-2x.c7bacc89.png 2x" alt="Cactuslab Inflatable Hero">
+										<img data-aspect-ratio="1.75" src="/static/img/branding/cactus-1x.4896603a.png"
+										srcset="/static/img/branding/cactus-2x.3136e172.png 2x" alt="Cactuslab Inflatable Hero">
 									</div>
 								</div>
 							</div>
@@ -185,21 +185,21 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 						
 						
 
-						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#8899AA" data-text-color="light" >
-							<div class="constraint js--constraint">
+						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#402F50" data-text-color="light" >
+							<div class="constraint js--constraint"style=" background-image: url('/assets/sm/upload/g8/ig/ds/zy/zoomy-app-icon-2018.svg'); background-repeat: no-repeat; background-position: 42.5% 75%;">
 
 								<header class="header js--header -has-no-best-award">
 									<div class="measure js--measure">
-										<h1 class="name js--name">Conversations with Teen Mums</h1>
+										<h1 class="name js--name">Zoomy</h1>
 
 										<div class="rich-text -smaller description">
 											
 											
-													<p><span>We were honoured to work with Juliette Veber on her interactive documentary project, presenting interviews, films and photographs of South Auckland teen mums.</span></p>
+													<p>We worked with local ride-sharing company Zoomy to re-imagine its rider app for iOS and Android. The result is a much improved user experience and two beautiful new apps.</p>
 												
 										</div>
 
-										<a class="ctabutton" href="/work/conversations-with-teen-mums/"><span class="label">View Project</span></a>
+										<a class="ctabutton" href="/work/zoomy/"><span class="label">View Project</span></a>
 
 										
 									</div>
@@ -209,29 +209,18 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 								
 
 
-								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
+								<div class="media js--media -is-only-device-phone -has-no-device-desktop -has-no-device-tablet -has-device-phone">
 									
 
 									
-										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
+
+									
+
+									
+										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="0"  style="color: rgb(17,17,17)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.23375" src="/assets/resized/sm/upload/b3/yw/77/0t/cwtm-home-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/b3/yw/77/0t/cwtm-home-crop-0-1600-0-1972-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</figure>
-
-										
-									
-
-									
-
-									
-										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/au/gk/8i/8t/IMG_8178-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/au/gk/8i/8t/IMG_8178-0-700-0-1244-crop.jpg 2x" />
+													<img data-aspect-ratio="1.7771428571428571" src="/assets/resized/sm/upload/nr/kk/gs/vm/z2-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/nr/kk/gs/vm/z2-0-700-0-1244-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -242,83 +231,6 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 
 									
 								</div>
-
-								
-
-							</div>
-
-
-						</article>
-					
-						
-						
-								
-							
-						
-						
-						
-						
-
-						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#B96A2A" data-text-color="light" >
-							<div class="constraint js--constraint">
-
-								<header class="header js--header -has-no-best-award">
-									<div class="measure js--measure">
-										<h1 class="name js--name">Pacific Gardens</h1>
-
-										<div class="rich-text -smaller description">
-											
-											
-													<p><span>We worked with&nbsp;</span>Alt Group<span>&nbsp;to deliver this mobile-friendly brochure site for a new Auckland housing development.</span></p>
-												
-										</div>
-
-										<a class="ctabutton" href="/work/pacific-gardens/"><span class="label">View Project</span></a>
-
-										
-									</div>
-								</header>
-
-								
-								
-
-
-								<div class="media js--media  -has-device-desktop -has-no-device-tablet -has-device-phone">
-									
-
-									
-										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.3125" src="/assets/resized/sm/upload/nm/9c/9n/3f/pg-home-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/nm/9c/9n/3f/pg-home-crop-0-1600-0-2100-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</figure>
-
-										
-									
-
-									
-
-									
-										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
-											<div class="bezel js--bezel">
-												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/5g/lu/70/n1/IMG_8092-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/5g/lu/70/n1/IMG_8092-0-700-0-1244-crop.jpg 2x" />
-
-												</div>
-											</div>
-										</div>
-
-										
-									
-
-									
-								</div>
-
-								
-
 							</div>
 
 
@@ -364,7 +276,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.47375" src="/assets/resized/sm/upload/u2/t2/83/ur/dinz-2-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/u2/t2/83/ur/dinz-2-crop-0-1600-0-2356-crop.jpg 2x" />
+													<img data-aspect-ratio="1.47375" src="/assets/resized/sm/upload/u2/t2/83/ur/dinz-2-crop-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/u2/t2/83/ur/dinz-2-crop-0-1600-0-2356-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -379,7 +291,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.8" style="color: rgb(34,34,34)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-700-0-1244-crop.jpg 2x" />
+													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/0k/hb/nr/h0/IMG_7488-0-700-0-1244-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -390,9 +302,6 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 
 									
 								</div>
-
-								
-
 							</div>
 
 
@@ -440,7 +349,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="device js--device -tablet -landscape" data-device-type="tablet" data-layer="0" style="color: rgb(0,50,96)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="0.75" src="/assets/resized/sm/upload/bl/ve/vx/e8/ipad-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/bl/ve/vx/e8/ipad-0-1202-0-901-crop.jpg 2x" />
+													<img data-aspect-ratio="0.75" src="/assets/resized/sm/upload/bl/ve/vx/e8/ipad-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/bl/ve/vx/e8/ipad-0-1202-0-901-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -453,7 +362,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.75" style="color: rgb(0,50,96)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.7771428571428571" src="/assets/resized/sm/upload/ti/x8/1i/2x/iOS%20Simulator%20Screen%20Shot%2021.08.2015%203.02.01%20pm-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/ti/x8/1i/2x/iOS%20Simulator%20Screen%20Shot%2021.08.2015%203.02.01%20pm-0-700-0-1244-crop.jpg 2x" />
+													<img data-aspect-ratio="1.7771428571428571" src="/assets/resized/sm/upload/ti/x8/1i/2x/iOS%20Simulator%20Screen%20Shot%2021.08.2015%203.02.01%20pm-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/ti/x8/1i/2x/iOS%20Simulator%20Screen%20Shot%2021.08.2015%203.02.01%20pm-0-700-0-1244-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -464,9 +373,6 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 
 									
 								</div>
-
-								
-
 							</div>
 
 
@@ -518,7 +424,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="device js--device -tablet -landscape" data-device-type="tablet" data-layer="0" style="color: rgb(255,255,255)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="0.75" src="/assets/resized/sm/upload/s7/yr/m1/ko/vend-sale-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/s7/yr/m1/ko/vend-sale-0-1600-0-1200-crop.jpg 2x" />
+													<img data-aspect-ratio="0.75" src="/assets/resized/sm/upload/s7/yr/m1/ko/vend-sale-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/s7/yr/m1/ko/vend-sale-0-1600-0-1200-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -531,9 +437,6 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 
 									
 								</div>
-
-								
-
 							</div>
 
 
@@ -583,7 +486,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" >
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="0.875" src="/assets/resized/sm/upload/z9/0v/n1/ah/napkin-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/z9/0v/n1/ah/napkin-0-1600-0-1400-crop.jpg 2x" />
+													<img data-aspect-ratio="0.875" src="/assets/resized/sm/upload/z9/0v/n1/ah/napkin-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/z9/0v/n1/ah/napkin-0-1600-0-1400-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -599,16 +502,13 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 									
 										<div class="pin -gold" data-layer="1">
 											<div class="ratio js--ratio" style="padding-top: 47.5%">
-												<img src="/static/img/best/gold-pin.1408a406.png" data-aspect-ratio="0.475"/>
+												<img src="/static/img/best/gold-pin.46a4c3fd.png" data-aspect-ratio="0.475"/>
 											</div>
 										</div>
 
 										
 									
 								</div>
-
-								
-
 							</div>
 
 
@@ -623,7 +523,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 						
 						
 
-						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#445566" data-text-color="light" >
+						<article class="hero js--hero site-hero -project" data-hero-type="project" data-background-color="#556677" data-text-color="light" >
 							<div class="constraint js--constraint">
 
 								<header class="header js--header -has-best-award">
@@ -633,7 +533,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="rich-text -smaller description">
 											
 											
-													<p>For a number of years we dreamt of a better place to discuss our shared interest in film, and when we couldn&rsquo;t find the right vehicle, we made one. The result is Letterboxd, a social network for grass-roots film discussion and discovery.</p>
+													<p>For years we dreamt of a better place to discuss our shared interest in film, and when we couldn&rsquo;t find the right outlet, we made one. The result is Letterboxd, a social network for grass-roots film discussion and discovery.</p>
 												
 										</div>
 
@@ -658,7 +558,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" data-offset-x="-0.125">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="2.1925" src="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-1600-0-3506-crop.jpg 2x" />
+													<img data-aspect-ratio="2.1925" src="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-1600-0-3506-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -673,7 +573,7 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.75" style="color: rgb(32,40,48)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-700-0-1244-crop.jpg 2x" />
+													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-700-0-1244-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -685,16 +585,13 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 									
 										<div class="pin -gold" data-layer="2">
 											<div class="ratio js--ratio" style="padding-top: 47.5%">
-												<img src="/static/img/best/gold-pin.1408a406.png" data-aspect-ratio="0.475"/>
+												<img src="/static/img/best/gold-pin.46a4c3fd.png" data-aspect-ratio="0.475"/>
 											</div>
 										</div>
 
 										
 									
 								</div>
-
-								
-
 							</div>
 
 
@@ -735,4 +632,4 @@ Response-Body:<<--EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
 </html>
 
 
---EOF-E7BCCDEA-136F-4331-852E-AC45BE725F5C-
+--EOF-95BB5B3F-1873-4C07-9BA9-8A1E2B4362AE-

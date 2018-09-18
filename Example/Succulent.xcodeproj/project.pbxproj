@@ -184,7 +184,6 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				20F9E96BBE912F668932FC6E /* [CP] Embed Pods Frameworks */,
-				8565D3284112D120E94A1F97 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -204,7 +203,6 @@
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
 				67E0017B1BEC836750F951B1 /* [CP] Embed Pods Frameworks */,
-				34D5F8DB8347867EC322B9EF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -299,21 +297,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Succulent_Example/Pods-Succulent_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		34D5F8DB8347867EC322B9EF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Succulent_Tests/Pods-Succulent_Tests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		40BC175C593738079E7DA04D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,21 +333,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Succulent_Tests/Pods-Succulent_Tests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8565D3284112D120E94A1F97 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Succulent_Example/Pods-Succulent_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F78D3BA12CB106C61DB4D1BE /* [CP] Check Pods Manifest.lock */ = {

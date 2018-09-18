@@ -7,19 +7,19 @@ Protocol-Version: HTTP/1.1
 Protocol: http
 Host: cactuslab.com
 File: /index.html
-Response-Header:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
+Response-Header:<<--EOF-0EFBFB11-76B0-4A5F-B19D-7CC7C50A1A9E-
 HTTP/1.1 404
 Content-Type: text/html;charset=utf-8
-Content-Language: en-US
-Keep-Alive: timeout=5, max=100
-Proxy-Connection: Keep-alive
-Transfer-Encoding: Identity
-Server: Apache
-Date: Fri, 22 Sep 2017 03:30:30 GMT
 X-UA-Compatible: IE=Edge
+Keep-Alive: timeout=5, max=100
+Transfer-Encoding: Identity
+Date: Tue, 18 Sep 2018 04:02:22 GMT
+Content-Language: en-US
+Proxy-Connection: keep-alive
+Server: Apache
 
---EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
-Response-Body:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
+--EOF-0EFBFB11-76B0-4A5F-B19D-7CC7C50A1A9E-
+Response-Body:<<--EOF-0EFBFB11-76B0-4A5F-B19D-7CC7C50A1A9E-
 
 
 
@@ -32,7 +32,7 @@ Response-Body:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="/static/img/favicon/ms-icon-144x144.aea04ac3.png">
+	<meta name="msapplication-TileImage" content="/static/img/favicon/ms-icon-144x144.348a6bea.png">
 	<meta name="theme-color" content="#ffffff">
 
 	<meta name="twitter:card" content="summary">
@@ -52,24 +52,24 @@ Response-Body:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
 
 	<title> Cactuslab, a web and app design and development studio with superpowers in Auckland, New Zealand </title>
 
-	<link rel="stylesheet" href="/static/css/main.min.4449b371.css" type="text/css" media="all">
+	<link rel="stylesheet" href="/static/css/main.min.0c089bf8.css" type="text/css" media="all">
 
-	<link rel="apple-touch-icon" sizes="57x57" href="/static/img/favicon/apple-icon-57x57.91b5e087.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="/static/img/favicon/apple-icon-60x60.bb224cb5.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/static/img/favicon/apple-icon-72x72.d8586b5b.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="/static/img/favicon/apple-icon-76x76.87e0b590.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/static/img/favicon/apple-icon-114x114.3c6c093f.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="/static/img/favicon/apple-icon-120x120.a0e8f733.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="/static/img/favicon/apple-icon-144x144.aea04ac3.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="/static/img/favicon/apple-icon-152x152.97ec83a8.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-icon-180x180.61c96f38.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="/static/img/favicon/android-icon-192x192.ba77f94b.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.11d28313.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon/favicon-96x96.40e8f9ae.png">
-	<link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.11d28313.png">
-	<link rel="manifest" href="/static/img/favicon/manifest.8bf33c43.json">
+	<link rel="apple-touch-icon" sizes="57x57" href="/static/img/favicon/apple-icon-57x57.3b759abf.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/static/img/favicon/apple-icon-60x60.d3154154.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/static/img/favicon/apple-icon-72x72.e17ffbe2.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/static/img/favicon/apple-icon-76x76.af879424.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/static/img/favicon/apple-icon-114x114.2ee25a48.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/static/img/favicon/apple-icon-120x120.b6234df4.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/static/img/favicon/apple-icon-144x144.348a6bea.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/static/img/favicon/apple-icon-152x152.4c6ae4da.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-icon-180x180.47fe67b5.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="/static/img/favicon/android-icon-192x192.5f01e877.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.1d5c25f9.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon/favicon-96x96.41e24437.png">
+	<link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.1d5c25f9.png">
+	<link rel="manifest" href="/static/img/favicon/manifest.b7c892d9.json">
 
-	<script type="text/javascript" src="/static/js/main.min.412ee8df.js"></script>
+	<script type="text/javascript" src="/static/js/main.min.4b5788a0.js"></script>
 </head>
 
 
@@ -154,8 +154,8 @@ Response-Body:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
 								
 								<div class="cactus js--cactus" style="width: 57.14285714285714%">
 									<div class="ratio" style="padding-top: 175.0%;">
-										<img data-aspect-ratio="1.75" src="/static/img/branding/404-cactus-1x.ab156fef.png"
-										srcset="/static/img/branding/404-cactus-2x.e904c2ef.png 2x" alt="Cactuslab Inflatable Hero">
+										<img data-aspect-ratio="1.75" src="/static/img/branding/404-cactus-1x.8b2c9a33.png"
+										srcset="/static/img/branding/404-cactus-2x.b4807c21.png 2x" alt="Cactuslab Inflatable Hero">
 									</div>
 								</div>
 							</div>
@@ -194,4 +194,4 @@ Response-Body:<<--EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
 </html>
 
 
---EOF-010A0D42-2978-4148-A2EB-5E612268BF3B-
+--EOF-0EFBFB11-76B0-4A5F-B19D-7CC7C50A1A9E-
