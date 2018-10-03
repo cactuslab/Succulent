@@ -9,7 +9,8 @@
 Pod::Spec.new do |s|
   s.name             = 'Succulent'
   s.version          = '0.3.5'
-  s.summary          = 'A short description of Succulent.'
+  s.summary          = 'Succulent allows you to record and replay API responses to speed up and isolate
+  your unit and UI tests.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +19,11 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+A common problem is that an API is often developed in
+tandem with the client. Succulent is designed specifically to remove the effort
+in maintaining a specially built mock API by allowing you to record the current
+API and replay it back in unit and UI tests. This allows you to quickly update
+the tests when the API changes throughout your development cycle.
                        DESC
 
   s.homepage         = 'https://github.com/cactuslab/Succulent'
@@ -31,12 +36,6 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Succulent/Classes/**/*.{m,h,swift}'
-
-  # s.resource_bundles = {
-  #   'Succulent' => ['Succulent/Assets/*.png']
-  # }
-
-  s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.swift_version = '4.2'
   s.dependency 'Embassy', '~> 4.0.8'
 end
