@@ -200,6 +200,14 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    func testPassThroughURLPreservation() {
+        suc.baseUrl = URL(string: "http://www.cactuslab.com/api/")
+        
+        GET("index.html") { (data, response, error) in
+            XCTAssertTrue(response?.url?.absoluteString == "http://cactuslab.com/api/index.html", "The responseURL was \(response?.url?.absoluteString ?? "nil")")
+        }
+    }
+    
     func testHeaders() {
         GET("headers/index.html") { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 404)

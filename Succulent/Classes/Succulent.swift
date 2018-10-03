@@ -119,7 +119,8 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 res.data = trace.responseBody
                 resultBlock(.response(res))
             } else if let baseUrl = self.baseUrl {
-                let url = URL(string: "\(req.file)", relativeTo: baseUrl)!
+                // Using a '.' prefix here preserves the path components of the baseUrl if there are any
+                let url = URL(string: ".\(req.file)", relativeTo: baseUrl)!
                 
                 print("Pass-through URL: \(url.absoluteURL)")
                 var urlRequest = URLRequest(url: url)
