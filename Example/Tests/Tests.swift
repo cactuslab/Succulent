@@ -263,4 +263,32 @@ class Tests: XCTestCase, SucculentTest {
         XCTAssertEqual(1, suc.version)
     }
     
+    func testQueryStringOrder() {
+        suc.ignoreParameters = ["a"]
+        
+        GET("query.txt?username=test&perPage=2&a=1") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?perPage=2&username=test&a=1") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
+    
+    func testQueryWithRepeatedParam() {
+        GET("query.txt?username=test&username=test1") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?username=test1&username=test") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
+    
+    func testQueryWithMultipleRepeatedParams() {
+        GET("query.txt?username=test&perPage=2&username=test1&perPage=z") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?username=test&username=test1&perPage=z&perPage=2") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
 }

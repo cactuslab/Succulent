@@ -457,13 +457,18 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     private func sanitize(queryString: String) -> String {
-        guard let ignoreParameters = self.ignoreParameters else {
-            return queryString
-        }
+        let ignoreParameters = self.ignoreParameters ?? Set<String>()
         
         let params = Route.parse(queryString: queryString)
         var result = ""
-        params?.forEach({ (key, value) in
+        
+        params?.sorted(by: { (first, second) in
+            if first.0 == second.0 {
+                return first.1 < second.1
+            } else {
+                return first.0 < second.0
+            }
+        }).forEach({ (key, value) in
             if !ignoreParameters.contains(key) {
                 if result.endIndex > result.startIndex {
                     result += "&"

@@ -1,6 +1,6 @@
 PODS:
   - Embassy (4.0.8)
-  - Succulent (0.3.3):
+  - Succulent (0.3.6):
     - Embassy (~> 4.0.8)
 
 DEPENDENCIES:
@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Embassy: fe6a3f8dd2d705881c172dcb144fb97b9408f4cd
-  Succulent: 08c55d4a2430f9a493f9107d42ba327a28bddb67
+  Succulent: afbd1bdffe23979585bb31c3dae9fca1850c0086
 
 PODFILE CHECKSUM: 7cd1cfcf6f8a40e41dceed9093f40f64c15e361d
 
