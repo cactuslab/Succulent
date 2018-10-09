@@ -284,7 +284,6 @@ class Tests: XCTestCase, SucculentTest {
     }
     
     func testQueryWithMultipleRepeatedParams() {
-//        query.txt?username=test&perPage=2&username=test1&perPage=z
         GET("query.txt?username=test&perPage=2&username=test1&perPage=z") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
