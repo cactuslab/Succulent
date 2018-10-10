@@ -26,5 +26,5 @@ Content-Type: text/plain
 
 --EOF-2-
 Response-Body:<<--EOF-2-
-Denied
+This is also a Success
 --EOF-2-

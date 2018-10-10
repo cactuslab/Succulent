@@ -294,7 +294,7 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "")
         }
         GET("query.txt?username=test&username=test1&username=test2") { (data, response, error) in
-            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Denied")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "This is also a Success")
         }
         GET("query.txt?username=test&username=test1&username=test2&username=test3") { (data, response, error) in
             XCTAssert(response?.statusCode == 404)
