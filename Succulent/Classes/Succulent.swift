@@ -28,7 +28,7 @@ public struct Configuration {
 public class Succulent : NSObject, URLSessionTaskDelegate {
     
     public private(set) var port: Int?
-    public private(set) var version = 0
+    public var version = 0
     public private(set) var baseUrl: URL?
     public private(set) var recordUrl: URL? {
         didSet {
