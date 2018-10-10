@@ -8,11 +8,10 @@ Succulent is a Swift library to provide API recording and replay for automated t
 
 Succulent creates a local web server that you point your app to, instead of the live API. In recording
 mode, Succulent receives the API request from the app and then makes the same request to the live API,
-then records the request and response for replay.
+recording the request and response for future replay.
 
-Succulent can also handle mutating requests, like POST, PUT and DELETE, as after a mutating request
-it will store a new version of subsequent responses, so that during playback it can correctly simulate
-the change.
+Succulent can also handle mutating requests, like POST, PUT and DELETE: after a mutating request Succulent
+stores a new version of any subsequent responses, then correctly simulates the change during playback.
 
 ## Why?
 
