@@ -82,6 +82,13 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    func testIgnoredParametersForTrace() {
+        configureSucculent(ignoredParams: ["toBe"])
+        GET("query.txt?username=test&toBe=ignored") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
+    
     func testIgnoreAllParameters() {
         suc.ignoreParameters = ["ignore_me"]
         
