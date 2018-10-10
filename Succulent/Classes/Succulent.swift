@@ -10,8 +10,11 @@ import Embassy
 import Foundation
 
 public struct Configuration {
+    ///Specify the port that Succulent should listen on. Set to nil for Succulent to automatically choose a free port.
     public var port: Int?
+    ///A set of query string parameter names that should be ignored for the purposes of matching incoming requests to recorded requests.
     public var ignoreParameters: Set<String>?
+    ///An array of regular expression strings to match against incoming request paths; matches will not increase the Succulent version even if they use a mutating HTTP method.
     public var ignoreVersioningRequests: [String]?
     
     public init() {
