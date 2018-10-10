@@ -64,7 +64,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             return try! NSRegularExpression(pattern: expression, options: [])
         }
         
-        addTrace(url: traceUrl, ignoreVersioningRequests: ignoreVersioningRequests)
+        addTrace(url: traceUrl)
     }
     
     public convenience init(recordUrl: URL, baseUrl: URL) {
@@ -183,7 +183,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     /// Load the trace file at the given URL and populate our traces ivar
-    private func addTrace(url: URL, ignoreVersioningRequests: [String]) {
+    private func addTrace(url: URL) {
         if traces == nil {
             traces = [String : Trace]()
         }
