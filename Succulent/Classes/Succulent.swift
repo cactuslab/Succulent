@@ -68,6 +68,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var recordedKeys = Set<String>()
     private var ignoreExpressions: [NSRegularExpression] = []
 
+    ///Initialise Succulent in replay mode, with an optional trace file to replay from, a pass-through URL to use if a match if not found in the trace file, and configuration.
     public convenience init(replayFrom traceUrl: URL?, passThroughBaseUrl baseUrl: URL? = nil, configuration: Configuration? = nil) {
         
         self.init(configuration: configuration)
@@ -88,6 +89,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
         }
     }
     
+    ///Initialise Succulent in recording mode, with a URL to record the trace to and the base URL for the upstream server that we're recording.
     private init(configuration: Configuration?) {
         super.init()
         if let configuration = configuration {
