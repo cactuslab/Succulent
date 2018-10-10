@@ -21,11 +21,7 @@ class Tests: XCTestCase, SucculentTest {
             suc.stop()
         }
         let conf = Configuration(port: nil, ignoreParameters: ignoredParams, ignoreVersioningRequests: ["^/ignore_post.txt"])
-        if let traceURL = self.traceUrl {
-            suc = Succulent(replayFrom: traceURL, passThroughBaseUrl: passThroughBaseUrl, configuration: conf)
-        } else {
-            suc = Succulent(passThroughBaseUrl: passThroughBaseUrl, configuration: conf)
-        }
+        suc = Succulent(replayFrom: self.traceUrl, passThroughBaseUrl: passThroughBaseUrl, configuration: conf)
         
         suc.start()
         self.baseURL = URL(string: "http://localhost:\(suc.actualPort)")

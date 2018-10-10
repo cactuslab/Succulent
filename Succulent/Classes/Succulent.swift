@@ -65,7 +65,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var recordedKeys = Set<String>()
     private var ignoreExpressions: [NSRegularExpression] = []
 
-    public convenience init(replayFrom traceUrl: URL? = nil, passThroughBaseUrl baseUrl: URL? = nil, configuration: Configuration? = nil) {
+    public convenience init(replayFrom traceUrl: URL?, passThroughBaseUrl baseUrl: URL? = nil, configuration: Configuration? = nil) {
         
         self.init(configuration: configuration)
         self.baseUrl = baseUrl
