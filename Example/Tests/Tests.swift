@@ -291,7 +291,14 @@ class Tests: XCTestCase, SucculentTest {
         }
         GET("query.txt?username=test1&username=test") { (data, response, error) in
             XCTAssert(response?.statusCode == 404)
-            XCTAssertNotEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "")
+        }
+        GET("query.txt?username=test&username=test1&username=test2") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Denied")
+        }
+        GET("query.txt?username=test&username=test1&username=test2&username=test3") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "")
         }
     }
     
@@ -299,7 +306,7 @@ class Tests: XCTestCase, SucculentTest {
         GET("query.txt?username=test&perPage=2&username=test1&perPage=z") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
-        GET("query.txt?username=test&username=test1&perPage=z&perPage=2") { (data, response, error) in
+        GET("query.txt?username=test&username=test1&perPage=2&perPage=z") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
     }
