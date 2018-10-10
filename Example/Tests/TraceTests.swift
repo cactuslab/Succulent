@@ -21,7 +21,7 @@ class TraceTests: XCTestCase, SucculentTest {
         
         recordingURL = self.recordUrl
         
-        suc = Succulent(recordUrl: recordingURL, baseUrl: URL(string: "http://cactuslab.com/")!)
+        suc = Succulent(recordTo: recordingURL, baseUrl: URL(string: "http://cactuslab.com/")!)
         suc.start()
         
         baseURL = URL(string: "http://localhost:\(suc.actualPort)")
