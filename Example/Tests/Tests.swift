@@ -290,7 +290,8 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
         GET("query.txt?username=test1&username=test") { (data, response, error) in
-            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+            XCTAssert(response?.statusCode == 404)
+            XCTAssertNotEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
     }
     
@@ -300,6 +301,27 @@ class Tests: XCTestCase, SucculentTest {
         }
         GET("query.txt?username=test&username=test1&perPage=z&perPage=2") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
+    
+    ///Test our matching on different query string name & value order
+    func testQueryOrdering() {
+        GET("query.txt?a=1&b=2&a=2") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?a=1&a=2&b=2") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?b=2&a=1&a=2") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?a=2&a=1&b=2") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+            XCTAssertNotEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+        GET("query.txt?b=2&a=2&a=1") { (data, response, error) in
+            XCTAssert(response?.statusCode == 404)
+            XCTAssertNotEqual(String(data: data!, encoding: .utf8)!, "Success for query")
         }
     }
 }
