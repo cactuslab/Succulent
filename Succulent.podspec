@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Succulent'
-  s.version          = '0.3.6'
+  s.version          = '0.4.0'
   s.summary          = 'Succulent allows you to record and replay API responses to speed up and isolate
   your unit and UI tests.'
 
