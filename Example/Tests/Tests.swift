@@ -85,9 +85,8 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    /// This tests a recording that was made without the ignoredParams that we’re going to run the replay with. So the recording contains query strings with the ignored param. We ensure that we can still match those requests.
     func testIgnoredParametersForTrace() {
-// This tests a recording that was made without the ignoredParams that we’re going to run the replay with. So the recording contains query strings with the ignored param. We ensure that we can still match those requests.
-        
         configureSucculent(ignoredParams: ["toBe"])
         GET("query.txt?username=test&toBe=ignored") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
