@@ -9,12 +9,31 @@
 import Embassy
 import Foundation
 
+public struct Configuration {
+    ///Specify the port that Succulent should listen on. Set to nil for Succulent to automatically choose a free port.
+    public var port: Int?
+    ///A set of query string parameter names that should be ignored for the purposes of matching incoming requests to recorded requests.
+    public var ignoreParameters: Set<String>?
+    ///An array of regular expression strings to match against incoming request paths; matches will not increase the Succulent version even if they use a mutating HTTP method.
+    public var ignoreVersioningRequests: [String]?
+    
+    public init() {
+        
+    }
+    
+    public init(port: Int? = nil, ignoreParameters: Set<String>? = nil, ignoreVersioningRequests: [String]?) {
+        self.port = port
+        self.ignoreParameters = ignoreParameters
+        self.ignoreVersioningRequests = ignoreVersioningRequests
+    }
+}
+
 public class Succulent : NSObject, URLSessionTaskDelegate {
     
-    public var port: Int?
+    public private(set) var port: Int?
     public var version = 0
-    public var baseUrl: URL?
-    public var recordUrl: URL? {
+    public private(set) var baseUrl: URL?
+    public private(set) var recordUrl: URL? {
         didSet {
             if let recordUrl = recordUrl {
                 //Throw away the previous trace
@@ -22,7 +41,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
             }
         }
     }
-    public var ignoreParameters: Set<String>?
+    public private(set) var ignoreParameters: Set<String>?
     
     public let router = Router()
     
@@ -48,33 +67,41 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     private var currentTrace = NSMutableOrderedSet()
     private var recordedKeys = Set<String>()
     private var ignoreExpressions: [NSRegularExpression] = []
-    
-    public override init() {
-        super.init()
-        
-        createDefaultRouter()
-    }
 
-    public convenience init(traceUrl: URL, baseUrl: URL? = nil, ignoreVersioningRequests: [String] = []) {
-        self.init()
+    ///Initialise Succulent in replay mode, with an optional trace file to replay from, a pass-through URL to use if a match if not found in the trace file, and configuration.
+    public convenience init(replayFrom traceUrl: URL?, passThroughBaseUrl baseUrl: URL? = nil, configuration: Configuration? = nil) {
         
+        self.init(configuration: configuration)
         self.baseUrl = baseUrl
-        
-        ignoreExpressions = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
-            return try! NSRegularExpression(pattern: expression, options: [])
+
+        if let traceUrl = traceUrl {
+            addTrace(url: traceUrl)
         }
-        
-        addTrace(url: traceUrl, ignoreVersioningRequests: ignoreVersioningRequests)
     }
     
-    public convenience init(recordUrl: URL, baseUrl: URL) {
-        self.init()
+    public convenience init(recordTo recordUrl: URL, baseUrl: URL, configuration: Configuration? = nil) {
+        self.init(configuration: configuration)
         
         defer {
             /* Defer so that the didSet runs on recordUrl */
             self.recordUrl = recordUrl
             self.baseUrl = baseUrl
         }
+    }
+    
+    ///Initialise Succulent in recording mode, with a URL to record the trace to and the base URL for the upstream server that we're recording.
+    private init(configuration: Configuration?) {
+        super.init()
+        if let configuration = configuration {
+            if let ignoreVersioningRequests = configuration.ignoreVersioningRequests {
+                ignoreExpressions = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
+                    return try! NSRegularExpression(pattern: expression, options: [])
+                }
+            }
+            ignoreParameters = configuration.ignoreParameters
+            port = configuration.port
+        }
+        createDefaultRouter()
     }
     
     private func createDefaultRouter() {
@@ -183,7 +210,7 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     }
     
     /// Load the trace file at the given URL and populate our traces ivar
-    private func addTrace(url: URL, ignoreVersioningRequests: [String]) {
+    private func addTrace(url: URL) {
         if traces == nil {
             traces = [String : Trace]()
         }
@@ -333,9 +360,6 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     self.loop.call {
                         switch result {
                         case .response(let res):
-                            if res.containsHeader("Set-Cookie") {
-                                print("Here we are with cooookies")
-                            }
                             startResponse("\(res.status)", res.headers ?? [])
                             
                             if let data = res.data {

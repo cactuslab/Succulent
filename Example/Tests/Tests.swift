@@ -11,17 +11,20 @@ class Tests: XCTestCase, SucculentTest {
     override func setUp() {
         super.setUp()
         
-        if let traceURL = self.traceUrl {
-            suc = Succulent(traceUrl: traceURL, baseUrl: nil, ignoreVersioningRequests: ["^/ignore_post.txt"])
-        } else {
-            suc = Succulent()
-        }
-        
-        suc.start()
-        
-        baseURL = URL(string: "http://localhost:\(suc.actualPort)")
+        configureSucculent()
         
         session = URLSession(configuration: .default)
+    }
+    
+    func configureSucculent(ignoredParams: Set<String>? = nil, passThroughBaseUrl: URL? = nil) {
+        if let suc = suc {
+            suc.stop()
+        }
+        let conf = Configuration(port: nil, ignoreParameters: ignoredParams, ignoreVersioningRequests: ["^/ignore_post.txt"])
+        suc = Succulent(replayFrom: self.traceUrl, passThroughBaseUrl: passThroughBaseUrl, configuration: conf)
+        
+        suc.start()
+        self.baseURL = URL(string: "http://localhost:\(suc.actualPort)")
     }
     
     /// The name of the trace file for the current test
@@ -70,7 +73,7 @@ class Tests: XCTestCase, SucculentTest {
     }
     
     func testIgnoredParameters() {
-        suc.ignoreParameters = ["ignoreMe"]
+        configureSucculent(ignoredParams: ["ignoreMe"])
         
         GET("query.txt?username=test&ignoreMe=1209") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
@@ -82,8 +85,16 @@ class Tests: XCTestCase, SucculentTest {
         }
     }
     
+    /// This tests a recording that was made without the ignoredParams that we’re going to run the replay with. So the recording contains query strings with the ignored param. We ensure that we can still match those requests.
+    func testIgnoredParametersForTrace() {
+        configureSucculent(ignoredParams: ["toBe"])
+        GET("query.txt?username=test&toBe=ignored") { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
+        }
+    }
+    
     func testIgnoreAllParameters() {
-        suc.ignoreParameters = ["ignore_me"]
+        configureSucculent(ignoredParams: ["ignore_me"])
         
         GET("query.txt?ignore_me=12345") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
@@ -192,7 +203,7 @@ class Tests: XCTestCase, SucculentTest {
     }
     
     func testPassThrough() {
-        suc.baseUrl = URL(string: "http://www.cactuslab.com/")
+        configureSucculent(ignoredParams: nil, passThroughBaseUrl: URL(string: "http://www.cactuslab.com/"))
         
         GET("index.html") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
@@ -201,7 +212,7 @@ class Tests: XCTestCase, SucculentTest {
     }
     
     func testPassThroughURLPreservation() {
-        suc.baseUrl = URL(string: "http://www.cactuslab.com/api/")
+        configureSucculent(ignoredParams: nil, passThroughBaseUrl: URL(string: "http://www.cactuslab.com/api/"))
         
         GET("index.html") { (data, response, error) in
             XCTAssertTrue(response?.url?.absoluteString == "http://cactuslab.com/api/index.html", "The responseURL was \(response?.url?.absoluteString ?? "nil")")
@@ -264,7 +275,7 @@ class Tests: XCTestCase, SucculentTest {
     }
     
     func testQueryStringOrder() {
-        suc.ignoreParameters = ["a"]
+        configureSucculent(ignoredParams: ["a"])
         
         GET("query.txt?username=test&perPage=2&a=1") { (data, response, error) in
             XCTAssertEqual(String(data: data!, encoding: .utf8)!, "Success for query")
