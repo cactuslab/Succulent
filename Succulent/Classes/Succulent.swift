@@ -87,9 +87,11 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
     
     private init(configuration: Configuration?) {
         super.init()
-        if let configuration = configuration, let ignoreVersioningRequests = configuration.ignoreVersioningRequests {
-            ignoreExpressions = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
-                return try! NSRegularExpression(pattern: expression, options: [])
+        if let configuration = configuration {
+            if let ignoreVersioningRequests = configuration.ignoreVersioningRequests {
+                ignoreExpressions = ignoreVersioningRequests.map { (expression) -> NSRegularExpression in
+                    return try! NSRegularExpression(pattern: expression, options: [])
+                }
             }
             ignoreParameters = configuration.ignoreParameters
             port = configuration.port
