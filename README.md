@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/cocoapods/v/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
 [![License](https://img.shields.io/cocoapods/l/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
 [![Platform](https://img.shields.io/cocoapods/p/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
+[![Build Status](https://travis-ci.org/cactuslab/Succulent.svg?branch=develop)](https://travis-ci.org/cactuslab/Succulent)
 
 Succulent is a Swift library to provide API recording and replay for automated testing on iOS.
 
