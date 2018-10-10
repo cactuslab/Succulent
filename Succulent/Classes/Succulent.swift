@@ -333,9 +333,6 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                     self.loop.call {
                         switch result {
                         case .response(let res):
-                            if res.containsHeader("Set-Cookie") {
-                                print("Here we are with cooookies")
-                            }
                             startResponse("\(res.status)", res.headers ?? [])
                             
                             if let data = res.data {
