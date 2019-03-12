@@ -175,7 +175,7 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
         }
         
-        XCTAssertEqual(0, suc.version)
+        XCTAssertEqual(1, suc.version)
         
         GET("testing.txt") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
@@ -192,7 +192,7 @@ class Tests: XCTestCase, SucculentTest {
             XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
         }
         
-        XCTAssertEqual(0, suc.version)
+        XCTAssertEqual(1, suc.version)
         
         GET("testing.txt") { (data, response, error) in
             let string = String(data: data!, encoding: .utf8)!
@@ -200,6 +200,29 @@ class Tests: XCTestCase, SucculentTest {
         }
         
         XCTAssertEqual(1, suc.version)
+    }
+    
+    func testPOSTDifferentBody() {
+        XCTAssertEqual(0, suc.version)
+        
+        POST("testing.txt", body: "Body".data(using: .utf8)!) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted")
+        }
+        
+        XCTAssertEqual(1, suc.version)
+        
+        POST("testing.txt", body: "Body-Diff".data(using: .utf8)!) { (data, response, error) in
+            XCTAssertEqual(String(data: data!, encoding: .utf8), "posted2")
+        }
+        
+        XCTAssertEqual(2, suc.version)
+        
+        GET("testing.txt") { (data, response, error) in
+            let string = String(data: data!, encoding: .utf8)!
+            XCTAssert(string == "Hello!")
+        }
+        
+        XCTAssertEqual(2, suc.version)
     }
     
     func testPassThrough() {
