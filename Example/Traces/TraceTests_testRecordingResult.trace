@@ -7,22 +7,22 @@ Protocol-Version: HTTP/1.1
 Protocol: http
 Host: cactuslab.com
 File: /
-Response-Header:<<--EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
+Response-Header:<<--EOF-8B6990FC-F82D-407C-B517-75AFF7B46E4B-
 HTTP/1.1 200
-Content-Language: en-US
-X-UA-Compatible: IE=Edge
-Content-Length: 5406
-Connection: Keep-Alive
 Keep-Alive: timeout=5, max=100
-Vary: Accept-Encoding
-Date: Tue, 18 Sep 2018 21:41:56 GMT
-Content-Encoding: gzip
-Server: Apache
+Content-Length: 5401
 Content-Type: text/html;charset=utf-8
-Set-Cookie: JSESSIONID=08E2564BA124BB1855876FC5B9588792; Path=/; HttpOnly
+Server: Apache
+Proxy-Connection: keep-alive
+Content-Encoding: gzip
+X-UA-Compatible: IE=Edge
+Content-Language: en-US
+Set-Cookie: JSESSIONID=B47841717248967B8541F946767AF3EE; Path=/; HttpOnly
+Date: Tue, 12 Mar 2019 03:14:51 GMT
+Vary: Accept-Encoding
 
---EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
-Response-Body:<<--EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
+--EOF-8B6990FC-F82D-407C-B517-75AFF7B46E4B-
+Response-Body:<<--EOF-8B6990FC-F82D-407C-B517-75AFF7B46E4B-
 
 
 
@@ -558,7 +558,7 @@ Response-Body:<<--EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
 										<figure class="device js--device -desktop" data-device-type="desktop" data-layer="0" data-offset-x="-0.125">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="2.1925" src="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/i0/dt/rr/ii/lb-2017-dk-crop-tall-0-1600-0-3506-crop-1.jpg 2x" />
+													<img data-aspect-ratio="1.8125" src="/assets/resized/sm/upload/o1/op/oq/p2/lb-film-tdk-0-800-0-0.jpg" srcset="/assets/resized/sm/upload/o1/op/oq/p2/lb-film-tdk-0-1600-0-2900-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -573,7 +573,7 @@ Response-Body:<<--EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
 										<div class="device js--device -phone -portrait" data-device-type="phone" data-layer="1" data-offset-x="0.75" style="color: rgb(32,40,48)">
 											<div class="bezel js--bezel">
 												<div class="ratio js--ratio">
-													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/82/3y/cz/a9/lb-tdk-0-700-0-1244-crop-1.jpg 2x" />
+													<img data-aspect-ratio="1.78" src="/assets/resized/sm/upload/68/78/qh/8w/lb-tdk-0-350-0-0.jpg" srcset="/assets/resized/sm/upload/68/78/qh/8w/lb-tdk-0-700-0-1244-crop-1.jpg 2x" />
 
 												</div>
 											</div>
@@ -632,4 +632,4 @@ Response-Body:<<--EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
 </html>
 
 
---EOF-D23A7408-B2DC-469A-A3CB-A6F51EB2B2B6-
+--EOF-8B6990FC-F82D-407C-B517-75AFF7B46E4B-

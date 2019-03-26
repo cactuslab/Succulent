@@ -118,9 +118,9 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                 }
                 if !shouldIgnore {
                     self.lastWasMutation = true
+                    self.version += 1
                 }
             } else if self.lastWasMutation {
-                self.version += 1
                 self.lastWasMutation = false
             }
             
@@ -236,10 +236,10 @@ public class Succulent : NSObject, URLSessionTaskDelegate {
                             }
                         }
                         if !shouldIgnore {
+                            version += 1
                             lastWasMutation = true
                         }
                     } else if lastWasMutation {
-                        version += 1
                         lastWasMutation = false
                     }
                     
