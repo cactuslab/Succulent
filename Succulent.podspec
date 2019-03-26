@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Succulent'
-  s.version          = '0.4.0'
+  s.version          = '0.5.0'
   s.summary          = 'Succulent allows you to record and replay API responses to speed up and isolate
   your unit and UI tests.'
 
@@ -36,6 +36,6 @@ the tests when the API changes throughout your development cycle.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Succulent/Classes/**/*.{m,h,swift}'
-  s.swift_version = '4.2'
+  s.swift_version = '5.0'
   s.dependency 'Embassy', '~> 4.0.8'
 end

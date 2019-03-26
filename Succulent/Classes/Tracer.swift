@@ -436,8 +436,9 @@ extension String {
     func substring(with nsrange: NSRange) -> String? {
         guard let range = Range(nsrange)
             else { return nil }
-        let start = UTF16Index(encodedOffset: range.lowerBound)
-        let end = UTF16Index(encodedOffset: range.upperBound)
+        
+        let start = String.Index(utf16Offset: range.lowerBound, in: self)
+        let end = String.Index(utf16Offset: range.upperBound, in: self)
         return String(utf16[start..<end])
     }
     
@@ -445,8 +446,8 @@ extension String {
     /// or `nil` if the range can't be converted.
     func range(from nsrange: NSRange) -> Range<Index>? {
         guard let range = Range(nsrange) else { return nil }
-        let utf16Start = UTF16Index(encodedOffset: range.lowerBound)
-        let utf16End = UTF16Index(encodedOffset: range.upperBound)
+        let utf16Start = String.Index(utf16Offset: range.lowerBound, in: self)
+        let utf16End = String.Index(utf16Offset: range.upperBound, in: self)
         
         guard let start = Index(utf16Start, within: self),
             let end = Index(utf16End, within: self)
