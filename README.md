@@ -28,10 +28,10 @@ override func setUp() {
 
 	if let traceUrl = self.traceUrl {
 		// Replay using an existing trace file
-		succulent = Succulent(traceUrl: traceUrl)
+		succulent = Succulent(replayFrom: traceUrl)
 	} else {
 		// Record to a new trace file
-		succulent = Succulent(recordUrl: self.recordUrl, baseUrl: liveApiBaseUrl)
+		succulent = Succulent(recordTo: self.recordUrl, baseUrl: liveApiBaseUrl)
 	}
 
 	succulent.start()
