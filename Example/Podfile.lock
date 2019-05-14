@@ -1,7 +1,7 @@
 PODS:
-  - Embassy (4.0.8)
+  - Embassy (4.1.0)
   - Succulent (0.5.0):
-    - Embassy (~> 4.0.8)
+    - Embassy (~> 4.1.0)
 
 DEPENDENCIES:
   - Succulent (from `../`)
@@ -15,8 +15,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Embassy: fe6a3f8dd2d705881c172dcb144fb97b9408f4cd
-  Succulent: 9850badfdf75eca6a08633a1844cb93bddce2d4e
+  Embassy: 296c51c4b16b8377b413f48f413a99aa736adc22
+  Succulent: 600b787c9b0d67d8d71f33a93cd5a57953e6fbb3
 
 PODFILE CHECKSUM: 7cd1cfcf6f8a40e41dceed9093f40f64c15e361d
 

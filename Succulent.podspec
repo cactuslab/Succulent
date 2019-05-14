@@ -37,5 +37,5 @@ the tests when the API changes throughout your development cycle.
 
   s.source_files = 'Succulent/Classes/**/*.{m,h,swift}'
   s.swift_version = '5.0'
-  s.dependency 'Embassy', '~> 4.0.8'
+  s.dependency 'Embassy', '~> 4.1.0'
 end
