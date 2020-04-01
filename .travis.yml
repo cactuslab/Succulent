@@ -4,10 +4,9 @@
 
 osx_image: xcode11.3
 language: objective-c
+cache: cocoapods
 gemfile: Example/Gemfile
 podfile: Example/Podfile
-before_install:
-- bundle install
 script:
 - set -o pipefail && xcodebuild -workspace Example/Succulent.xcworkspace -scheme Succulent-Example -destination 'platform=iOS Simulator,name=iPhone 8,OS=13.3' build test | xcpretty
 - pod lib lint
