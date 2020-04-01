@@ -7,5 +7,5 @@ language: objective-c
 gemfile: Example/Gemfile
 podfile: Example/Podfile
 script:
-- set -o pipefail && xcodebuild -workspace Example/Succulent.xcworkspace -scheme Succulent-Example -destination 'platform=iOS Simulator,name=iPhone 6S,OS=13.3' build test | xcpretty
+- set -o pipefail && xcodebuild -workspace Example/Succulent.xcworkspace -scheme Succulent-Example -destination 'platform=iOS Simulator,name=iPhone 8,OS=13.3' build test | xcpretty
 - pod lib lint
