@@ -1,5 +1,3 @@
-TEST TRAVIS
-
 # Succulent
 
 [![Version](https://img.shields.io/cocoapods/v/Succulent.svg?style=flat)](http://cocoapods.org/pods/Succulent)
