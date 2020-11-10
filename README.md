@@ -20,23 +20,30 @@ Succulent solves the problem of getting repeatable API results to support stable
 
 ## Example
 
-Setup Succulent in your XCTest's `setUp` method:
+Set up Succulent in your XCTestCase's `setUp` method:
 
 ```swift
+var app: XCUIApplication!
+var succulent: Succulent!
+
 override func setUp() {
 	super.setUp()
 
+	self.app = XCUIApplication()
+
 	if let traceUrl = self.traceUrl {
 		// Replay using an existing trace file
-		succulent = Succulent(replayFrom: traceUrl)
+		self.succulent = Succulent(replayFrom: traceUrl)
 	} else {
 		// Record to a new trace file
-		succulent = Succulent(recordTo: self.recordUrl, baseUrl: liveApiBaseUrl)
+		// The "/" at the end of the base URL is required
+		self.succulent = Succulent(recordTo: self.recordUrl, baseUrl: URL(string: "{YOUR-REAL-BASE-URL}/")!)
 	}
 
-	succulent.start()
+	self.succulent.start()
 
-	launchEnvironment["succulentBaseURL"] = "http://localhost:\(succulent.actualPort)/"
+	self.app.launchEnvironment["succulentBaseURL"] = "http://localhost:\(succulent.actualPort)/"
+	self.app.launch()
 }
 
 /// The name of the trace file for the current test
@@ -58,11 +65,21 @@ private var recordUrl: URL {
 }
 ```
 
-Note that `recordUrl` uses a string that must be setup in your `Info.plist` file:
+Note that `recordUrl` uses a string that must be set up in your UI testing directory's `Info.plist` file:
 
 ```xml
 	<key>TraceRecordPath</key>
 	<string>$(PROJECT_DIR)/Succulent/</string>
+```
+
+You also need to give the target you are testing permission to connect to a local server. This is done by adding the following to the `Info.plist` of the target you are testing against:
+
+```xml
+	<key>NSAppTransportSecurity</key>
+	<dict>
+ 		<key>NSAllowsLocalNetworking</key>
+ 		<true/>
+	</dict>
 ```
 
 With this setting, Succulent records trace files into your project source tree. Therefore your Succulent traces are committed to source control with your test files, and when you build and run your tests the traces are copied into the test application.
@@ -71,7 +88,8 @@ Finally, in your app, look for the `"succulentBaseURL"` environment variable, an
 of your live API URL:
 
 ```swift
-let apiBaseUrl = ProcessInfo.processInfo.environment["succulentBaseURL"]
+let apiBaseUrlString = ProcessInfo.processInfo.environment["succulentBaseURL"] ?? "{YOUR-REAL-BASE-URL}"
+let apiBaseUrl = URL(string: baseUrlString)
 ```
 
 There is an example project in the `Example` directory. To run the example project, run `pod install` from within the Example directory, then open the Xcode workspace and run the tests. The example project demonstrates some of the use of Succulent in a stand-alone setting rather than as it is intended, which is for UI automation testing of another app.
